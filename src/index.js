@@ -28,6 +28,22 @@ app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'OK', timestamp: new Date() });
 });
 
+// Root Route
+app.get('/', (req, res) => {
+  res.status(200).json({
+    message: 'Willkommen bei der GeoWeather API!',
+    version: '1.0.0',
+    endpoints: {
+      health: '/api/health',
+      auth: '/api/auth',
+      favorites: '/api/favorites',
+      weatherHistory: '/api/weather-history',
+      subscriptions: '/api/subscriptions',
+      premium: '/api/premium'
+    }
+  });
+});
+
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/favorites', favoriteRoutes);
