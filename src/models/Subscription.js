@@ -5,30 +5,21 @@ const Subscription = {
   TIERS: {
     FREE: 'free',
     PREMIUM: 'premium',
-    ENTERPRISE: 'enterprise',
   },
 
   FEATURES: {
     free: {
       maxFavorites: 5,
-      maxHistoryDays: 30,
+      maxHistoryDays: 3,
       dataSourcesCount: 1,
       pushNotifications: false,
       mapLayers: false,
       dataExport: false,
     },
     premium: {
-      maxFavorites: 50,
-      maxHistoryDays: 365,
-      dataSourcesCount: 3,
-      pushNotifications: true,
-      mapLayers: true,
-      dataExport: true,
-    },
-    enterprise: {
       maxFavorites: 999,
-      maxHistoryDays: 1825,
-      dataSourcesCount: 10,
+      maxHistoryDays: 7,
+      dataSourcesCount: 3,
       pushNotifications: true,
       mapLayers: true,
       dataExport: true,
