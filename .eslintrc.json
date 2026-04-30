@@ -1,0 +1,20 @@
+{
+  "extends": "eslint:recommended",
+  "parserOptions": {
+    "ecmaVersion": 2021,
+    "sourceType": "module"
+  },
+  "env": {
+    "node": true,
+    "es2021": true,
+    "jest": true
+  },
+  "rules": {
+    "no-console": ["warn", { "allow": ["warn", "error", "log"] }],
+    "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+    "semi": ["error", "always"],
+    "quotes": ["error", "single", { "avoidEscape": true }],
+    "no-var": "error",
+    "prefer-const": "error"
+  }
+}

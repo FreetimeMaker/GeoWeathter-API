@@ -1,0 +1,75 @@
+name: Feature Request
+description: Suggest a new feature for GeoWeather API
+labels: ["enhancement"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for suggesting a feature! Please fill out the form below.
+
+  - type: input
+    id: title
+    attributes:
+      label: Feature Title
+      description: A clear title for the feature
+      placeholder: "e.g., 'Add WebSocket support for real-time updates'"
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      description: What problem does this feature solve?
+      placeholder: "Currently, users have to... but it would be better if..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: How would you implement this feature?
+      placeholder: "This could be implemented by..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternative Solutions
+      description: Any alternative approaches you've considered
+      placeholder: "Another approach could be..."
+
+  - type: textarea
+    id: examples
+    attributes:
+      label: Use Cases
+      description: Real-world examples of how this feature would be used
+      placeholder: |
+        Example 1: ...
+        Example 2: ...
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - Critical (Core functionality)
+        - High (Important feature)
+        - Medium (Nice to have)
+        - Low (Future consideration)
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: I have searched for existing feature requests
+          required: true
+        - label: This is not a duplicate request
+          required: true
