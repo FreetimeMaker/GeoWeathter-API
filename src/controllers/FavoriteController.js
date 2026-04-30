@@ -9,7 +9,7 @@ const FavoriteController = {
 
       if (!name || latitude === undefined || longitude === undefined) {
         return res.status(400).json({ 
-          message: 'Name, Latitude und Longitude erforderlich' 
+          message: 'Name, Latitude and Longitude required' 
         });
       }
 
@@ -21,14 +21,14 @@ const FavoriteController = {
       const userFavorites = await Favorite.findByUserId(userId);
       if (userFavorites.length >= maxFavorites) {
         return res.status(403).json({ 
-          message: `Maximale Anzahl von Favoriten (${maxFavorites}) erreicht` 
+          message: `Maximum number of favorites (${maxFavorites}) reached` 
         });
       }
 
       const favorite = await Favorite.create(userId, name, latitude, longitude);
 
       res.status(201).json({
-        message: 'Favorit erfolgreich erstellt',
+        message: 'Favorite successfully created',
         favorite,
       });
     } catch (error) {
@@ -42,7 +42,7 @@ const FavoriteController = {
       const favorites = await Favorite.findByUserId(userId);
 
       res.status(200).json({
-        message: 'Favoriten abgerufen',
+        message: 'Favorites retrieved',
         count: favorites.length,
         favorites,
       });
@@ -58,7 +58,7 @@ const FavoriteController = {
 
       const favorite = await Favorite.findById(id);
       if (!favorite || favorite.user_id !== userId) {
-        return res.status(404).json({ message: 'Favorit nicht gefunden' });
+        return res.status(404).json({ message: 'Favorite not found' });
       }
 
       res.status(200).json(favorite);
@@ -75,7 +75,7 @@ const FavoriteController = {
 
       const favorite = await Favorite.findById(id);
       if (!favorite || favorite.user_id !== userId) {
-        return res.status(404).json({ message: 'Favorit nicht gefunden' });
+        return res.status(404).json({ message: 'Favorite not found' });
       }
 
       const updatedFavorite = await Favorite.update(id, userId, {
@@ -85,7 +85,7 @@ const FavoriteController = {
       });
 
       res.status(200).json({
-        message: 'Favorit aktualisiert',
+        message: 'Favorite updated',
         favorite: updatedFavorite,
       });
     } catch (error) {
@@ -100,33 +100,33 @@ const FavoriteController = {
 
       const favorite = await Favorite.findById(id);
       if (!favorite || favorite.user_id !== userId) {
-        return res.status(404).json({ message: 'Favorit nicht gefunden' });
+        return res.status(404).json({ message: 'Favorite not found' });
       }
 
       await Favorite.delete(id, userId);
 
-      res.status(200).json({ message: 'Favorit gelöscht' });
+      res.status(200).json({ message: 'Favorite deleted' });
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
   },
 
   async sync(req, res) {
-    // Geräteübergreifende Synchronisation
+    // Cross-device synchronization
     try {
       const userId = req.user.userId;
       const { favorites } = req.body;
 
       if (!Array.isArray(favorites)) {
         return res.status(400).json({ 
-          message: 'Favoriten müssen ein Array sein' 
+          message: 'Favorites must be an array' 
         });
       }
 
       const syncedFavorites = await Favorite.sync(userId, favorites);
 
       res.status(200).json({
-        message: 'Favoriten synchronisiert',
+        message: 'Favorites synchronized',
         favorites: syncedFavorites,
       });
     } catch (error) {

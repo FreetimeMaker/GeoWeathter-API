@@ -31,7 +31,7 @@ app.get('/api/health', (req, res) => {
 // Root Route
 app.get('/', (req, res) => {
   res.status(200).json({
-    message: 'Willkommen bei der GeoWeather API!',
+    message: 'Welcome to the GeoWeather API!',
     version: '1.0.0',
     endpoints: {
       health: '/api/health',
@@ -53,10 +53,10 @@ app.use('/api/premium', premiumRoutes);
 
 // 404 Handler
 app.use((req, res) => {
-  res.status(404).json({ message: 'Route nicht gefunden' });
+  res.status(404).json({ message: 'Route not found' });
 });
 
-// Error Handler (muss zuletzt sein)
+// Error Handler (must be last)
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;

@@ -9,14 +9,14 @@ const SubscriptionController = {
 
       if (!tier || !Object.values(Subscription.TIERS).includes(tier)) {
         return res.status(400).json({ 
-          message: 'Ungültiger Abonnementtier' 
+          message: 'Invalid subscription tier' 
         });
       }
 
       const subscription = await Subscription.createSubscription(userId, tier, paymentMethod);
 
       res.status(201).json({
-        message: 'Abonnement erstellt',
+        message: 'Subscription created',
         subscription,
       });
     } catch (error) {
@@ -31,7 +31,7 @@ const SubscriptionController = {
 
       if (!subscription) {
         return res.status(200).json({
-          message: 'Benutzer hat kein Premium-Abonnement',
+          message: 'User does not have Premium subscription',
           subscription: {
             tier: Subscription.TIERS.FREE,
             features: Subscription.FEATURES[Subscription.TIERS.FREE],
@@ -40,7 +40,7 @@ const SubscriptionController = {
       }
 
       res.status(200).json({
-        message: 'Abonnement abgerufen',
+        message: 'Subscription retrieved',
         subscription: {
           ...subscription,
           features: Subscription.FEATURES[subscription.tier],
@@ -59,7 +59,7 @@ const SubscriptionController = {
       const currentSubscription = await Subscription.getSubscription(userId);
       if (!currentSubscription) {
         return res.status(404).json({ 
-          message: 'Kein Abonnement gefunden' 
+          message: 'No subscription found' 
         });
       }
 
@@ -69,7 +69,7 @@ const SubscriptionController = {
       );
 
       res.status(200).json({
-        message: 'Abonnement aktualisiert',
+        message: 'Subscription updated',
         subscription: {
           ...updatedSubscription,
           features: Subscription.FEATURES[updatedSubscription.tier],
@@ -89,7 +89,7 @@ const SubscriptionController = {
       const features = Subscription.FEATURES[tier];
 
       res.status(200).json({
-        message: 'Features abgerufen',
+        message: 'Features retrieved',
         tier,
         features,
       });

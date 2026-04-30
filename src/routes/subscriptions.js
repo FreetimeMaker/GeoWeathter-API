@@ -4,12 +4,12 @@ const authMiddleware = require('../middleware/auth');
 
 const router = express.Router();
 
-// Alle Routes erfordern Authentifizierung
+// All routes require authentication
 router.use(authMiddleware);
 
 /**
  * @route   POST /api/subscriptions
- * @desc    Neues Abonnement erstellen
+ * @desc    Create a new subscription
  * @body    { tier, paymentMethod }
  * @returns { subscription }
  */
@@ -17,14 +17,14 @@ router.post('/', SubscriptionController.createSubscription);
 
 /**
  * @route   GET /api/subscriptions
- * @desc    Abonnement des Benutzers abrufen
+ * @desc    Get user's subscription
  * @returns { subscription }
  */
 router.get('/', SubscriptionController.getSubscription);
 
 /**
  * @route   PUT /api/subscriptions
- * @desc    Abonnement aktualisieren/upgraden
+ * @desc    Update/upgrade subscription
  * @body    { tier, paymentMethod }
  * @returns { subscription }
  */
@@ -32,7 +32,7 @@ router.put('/', SubscriptionController.upgradeSubscription);
 
 /**
  * @route   GET /api/subscriptions/features
- * @desc    Verfügbare Features basierend auf Tier abrufen
+ * @desc    Get available features based on tier
  * @returns { tier, features }
  */
 router.get('/features', SubscriptionController.getFeatures);

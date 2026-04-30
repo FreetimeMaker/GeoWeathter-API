@@ -9,7 +9,7 @@ const WeatherHistoryController = {
 
       if (!location || temperature === undefined) {
         return res.status(400).json({ 
-          message: 'Standort und Temperatur erforderlich' 
+          message: 'Location and temperature required' 
         });
       }
 
@@ -24,7 +24,7 @@ const WeatherHistoryController = {
       const history = await WeatherHistory.create(userId, location, weatherData, sensorData);
 
       res.status(201).json({
-        message: 'Wetterdaten aufgezeichnet',
+        message: 'Weather data recorded',
         history,
       });
     } catch (error) {
@@ -39,7 +39,7 @@ const WeatherHistoryController = {
 
       if (!startDate || !endDate) {
         return res.status(400).json({ 
-          message: 'Start- und Enddatum erforderlich' 
+          message: 'Start and end date required' 
         });
       }
 
@@ -54,7 +54,7 @@ const WeatherHistoryController = {
       }
 
       res.status(200).json({
-        message: 'Wetterverlauf abgerufen',
+        message: 'Weather history retrieved',
         count: records.length,
         records,
       });
@@ -70,7 +70,7 @@ const WeatherHistoryController = {
 
       if (!location || !year || !month) {
         return res.status(400).json({ 
-          message: 'Standort, Jahr und Monat erforderlich' 
+          message: 'Location, year and month required' 
         });
       }
 
@@ -82,7 +82,7 @@ const WeatherHistoryController = {
       );
 
       res.status(200).json({
-        message: 'Monatliche Statistiken abgerufen',
+        message: 'Monthly statistics retrieved',
         analytics,
       });
     } catch (error) {
@@ -97,7 +97,7 @@ const WeatherHistoryController = {
 
       if (!location || !year) {
         return res.status(400).json({ 
-          message: 'Standort und Jahr erforderlich' 
+          message: 'Location and year required' 
         });
       }
 
@@ -108,7 +108,7 @@ const WeatherHistoryController = {
       );
 
       res.status(200).json({
-        message: 'Jährlicher Trend abgerufen',
+        message: 'Yearly trend retrieved',
         trend,
       });
     } catch (error) {
@@ -124,7 +124,7 @@ const WeatherHistoryController = {
       const hasAccess = await Subscription.checkFeatureAccess(userId, 'data_export');
       if (!hasAccess) {
         return res.status(403).json({ 
-          message: 'Datenexport erfordert Premium-Abonnement' 
+          message: 'Data export requires Premium subscription' 
         });
       }
 

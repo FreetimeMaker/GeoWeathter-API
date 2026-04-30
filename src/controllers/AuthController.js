@@ -7,12 +7,12 @@ const AuthController = {
       const { email, password, name } = req.body;
 
       if (!email || !password || !name) {
-        return res.status(400).json({ message: 'Email, Passwort und Name erforderlich' });
+        return res.status(400).json({ message: 'Email, password and name required' });
       }
 
       const existingUser = await User.findByEmail(email);
       if (existingUser) {
-        return res.status(400).json({ message: 'Email bereits registriert' });
+        return res.status(400).json({ message: 'Email already registered' });
       }
 
       const user = await User.create(email, password, name);
@@ -21,7 +21,7 @@ const AuthController = {
       const refreshToken = generateRefreshToken(user.id);
 
       res.status(201).json({
-        message: 'Benutzer erfolgreich registriert',
+        message: 'User successfully registered',
         user: {
           id: user.id,
           email: user.email,
@@ -41,24 +41,24 @@ const AuthController = {
       const { email, password } = req.body;
 
       if (!email || !password) {
-        return res.status(400).json({ message: 'Email und Passwort erforderlich' });
+        return res.status(400).json({ message: 'Email and password required' });
       }
 
       const user = await User.findByEmail(email);
       if (!user) {
-        return res.status(401).json({ message: 'Ungültige Anmeldedaten' });
+        return res.status(401).json({ message: 'Invalid credentials' });
       }
 
       const isPasswordValid = await User.verifyPassword(password, user.password);
       if (!isPasswordValid) {
-        return res.status(401).json({ message: 'Ungültige Anmeldedaten' });
+        return res.status(401).json({ message: 'Invalid credentials' });
       }
 
       const token = generateToken(user.id, user.email);
       const refreshToken = generateRefreshToken(user.id);
 
       res.status(200).json({
-        message: 'Erfolgreich angemeldet',
+        message: 'Successfully logged in',
         user: {
           id: user.id,
           email: user.email,
@@ -74,8 +74,8 @@ const AuthController = {
   },
 
   async logout(req, res) {
-    // Logout-Logik (z.B. Token invalidieren, wenn mit Blacklist-System)
-    res.status(200).json({ message: 'Erfolgreich abgemeldet' });
+    // Logout logic (e.g., invalidate token if using blacklist system)
+    res.status(200).json({ message: 'Successfully logged out' });
   },
 };
 

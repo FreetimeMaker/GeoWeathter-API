@@ -5,7 +5,7 @@ const router = express.Router();
 
 /**
  * @route   POST /api/auth/register
- * @desc    Neuen Benutzer registrieren
+ * @desc    Register a new user
  * @body    { email, password, name }
  * @returns { user, token, refreshToken }
  */
@@ -13,7 +13,7 @@ router.post('/register', AuthController.register);
 
 /**
  * @route   POST /api/auth/login
- * @desc    Benutzer anmelden
+ * @desc    Log in user
  * @body    { email, password }
  * @returns { user, token, refreshToken }
  */
@@ -21,7 +21,7 @@ router.post('/login', AuthController.login);
 
 /**
  * @route   POST /api/auth/logout
- * @desc    Benutzer abmelden
+ * @desc    Log out user
  * @returns { message }
  */
 router.post('/logout', AuthController.logout);

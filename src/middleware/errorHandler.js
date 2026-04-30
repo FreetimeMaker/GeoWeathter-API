@@ -9,7 +9,7 @@ const errorHandler = (err, req, res, next) => {
   }
 
   res.status(500).json({
-    message: 'Interner Serverfehler',
+    message: 'Internal server error',
     error: process.env.NODE_ENV === 'development' ? err.message : {},
   });
 };

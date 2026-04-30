@@ -1,27 +1,27 @@
 # Deployment Guide
 
-## Übersicht
+## Overview
 
-Dieses Dokument beschreibt verschiedene Möglichkeiten, die GeoWeather API zu deployieren.
+This document describes various ways to deploy the GeoWeather API.
 
 ## 1. Docker Compose (Local Development & Staging)
 
-### Schnellstart
+### Quick Start
 
 ```bash
 docker-compose up -d
 docker-compose exec api npm run db:migrate
 ```
 
-Die API ist dann verfügbar unter `http://localhost:3000`
+The API is then available at `http://localhost:3000`
 
-### Logs anzeigen
+### View Logs
 
 ```bash
 docker-compose logs -f api
 ```
 
-### Stoppen
+### Stop
 
 ```bash
 docker-compose down
@@ -29,7 +29,7 @@ docker-compose down
 
 ## 2. Heroku
 
-### Vorbereitung
+### Preparation
 
 ```bash
 npm install -g heroku
@@ -39,23 +39,23 @@ heroku login
 ### Deployment
 
 ```bash
-# App erstellen
+# Create app
 heroku create geoweather-api
 
-# Environment-Variablen setzen
+# Set environment variables
 heroku config:set \
   JWT_SECRET="your_long_secret_key" \
   OPENWEATHER_API_KEY="your_key" \
   WEATHER_API_KEY="your_key" \
   NODE_ENV=production
 
-# PostgreSQL Add-on installieren
+# Install PostgreSQL Add-on
 heroku addons:create heroku-postgresql:standard-0
 
-# Deployen
+# Deploy
 git push heroku main
 
-# Migrationen ausführen
+# Run migrations
 heroku run npm run db:migrate
 ```
 
@@ -70,36 +70,36 @@ heroku logs --tail
 ### EC2 Instance Setup
 
 ```bash
-# SSH in EC2 Instanz
+# SSH into EC2 instance
 ssh -i key.pem ec2-user@your-instance.amazonaws.com
 
-# Node.js installieren
+# Install Node.js
 curl -sL https://rpm.nodesource.com/setup_18.x | sudo bash -
 sudo yum install nodejs -y
 
-# Repository klonen
+# Clone repository
 git clone https://github.com/yourusername/GeoWeathter-API.git
 cd GeoWeathter-API
 
-# Dependencies installieren
+# Install dependencies
 npm install
 
-# Environment-Variablen setzen
+# Set environment variables
 nano .env
-# Füge RDS-Verbindungsdaten ein
+# Add RDS connection details
 ```
 
-### RDS PostgreSQL erstellen
+### Create RDS PostgreSQL
 
 ```bash
 # Via AWS Management Console:
 # 1. RDS > Create Database
 # 2. Engine: PostgreSQL 15
 # 3. DB Instance: db.t3.micro (Free Tier)
-# 4. Speichere Endpunkt und Anmeldedaten
+# 4. Save endpoint and credentials
 ```
 
-### Environment-Variablen
+### Environment Variables
 
 ```
 DATABASE_URL=postgresql://user:password@rds-endpoint:5432/geoweather
@@ -108,7 +108,7 @@ NODE_ENV=production
 JWT_SECRET=your_secret
 ```
 
-### Systemd Service erstellen
+### Create Systemd Service
 
 ```bash
 sudo nano /etc/systemd/system/geoweather-api.service
@@ -141,8 +141,8 @@ sudo systemctl start geoweather-api
 ### Via Dashboard
 
 1. Apps > Create App
-2. GitHub Repository verbinden
-3. Environment-Variablen hinzufügen:
+2. Connect GitHub Repository
+3. Add environment variables:
    - DATABASE_URL
    - JWT_SECRET
    - etc.
@@ -151,88 +151,88 @@ sudo systemctl start geoweather-api
 ### Via CLI
 
 ```bash
-# doctl installieren
+# Install doctl
 sudo snap install doctl
 
-# Authentifizieren
+# Authenticate
 doctl auth init
 
-# Deployment konfigurieren
+# Configure deployment
 doctl apps create --spec app.yaml
 ```
 
 ## 5. Vercel (Serverless)
 
-### Vorbereitung
+### Preparation
 
 ```bash
-# Vercel CLI installieren
+# Install Vercel CLI
 npm install -g vercel
 
-# Anmelden
+# Login
 vercel login
 ```
 
-### Vercel Postgres einrichten
+### Set up Vercel Postgres
 
-1. Gehe zu [Vercel Dashboard](https://vercel.com/dashboard)
-2. Wähle dein Projekt
-3. Gehe zu Storage > Create Database > Postgres
-4. Kopiere die `DATABASE_URL`
+1. Go to [Vercel Dashboard](https://vercel.com/dashboard)
+2. Select your project
+3. Go to Storage > Create Database > Postgres
+4. Copy the `DATABASE_URL`
 
 ### Deployment
 
 ```bash
-# Im Projekt-Verzeichnis
+# In project directory
 vercel
 
-# Environment-Variablen setzen
+# Set environment variables
 vercel env add DATABASE_URL
 vercel env add JWT_SECRET
 vercel env add OPENWEATHER_API_KEY
 vercel env add WEATHER_API_KEY
 vercel env add CORS_ORIGIN
 
-# Deployen
+# Deploy
 vercel --prod
 ```
 
-### Migrationen ausführen
+### Run Migrations
 
-Nach dem ersten Deployment:
+After the first deployment:
 
 ```bash
 vercel run npm run db:migrate
 ```
 
-### Anmerkungen
+### Notes
 
-- Vercel verwendet Serverless-Funktionen, daher sind WebSocket-Verbindungen (Socket.io) nicht unterstützt
-- Für Produktion mit hoher Last erwäge Heroku oder AWS
-- Kosten: Free Tier verfügbar, bezahlt ab 1000 Funktionsaufrufen/Monat
+- Vercel uses serverless functions, so WebSocket connections (Socket.io) are not supported
+- For production with high load, consider Heroku or AWS
+- Costs: Free tier available, paid from 1000 function calls/month
 
 ## 6. Google Cloud Run
 
-### Vorbereitung
+### Preparation
 
 ```bash
-# Cloud SDK installieren
+# Install Cloud SDK
 curl https://sdk.cloud.google.com | bash
 
-# Authentifizieren
+# Authenticate
 gcloud auth login
 ```
 
 ### Deployment
 
 ```bash
-# Image bauen
+# Build image
 docker build -t gcr.io/PROJECT_ID/geoweather-api .
 
-# Zu Container Registry pushen
+# Push to Container Registry
 docker push gcr.io/PROJECT_ID/geoweather-api
 
-# Zu Cloud Run deployen
+# Deploy to Cloud Run
 gcloud run deploy geoweather-api \
   --image gcr.io/PROJECT_ID/geoweather-api \
   --platform managed \
@@ -241,9 +241,9 @@ gcloud run deploy geoweather-api \
   --allow-unauthenticated
 ```
 
-## 6. Kubernetes (Production)
+## 7. Kubernetes (Production)
 
-### Helm Chart erstellen
+### Create Helm Chart
 
 ```bash
 helm create geoweather-api

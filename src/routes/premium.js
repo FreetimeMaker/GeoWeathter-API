@@ -10,18 +10,18 @@ router.use(authMiddleware);
 
 /**
  * @route   POST /api/premium/weather-sources
- * @desc    Wetterdaten von mehreren Quellen abrufen (Premium)
+ * @desc    Get weather data from multiple sources (Premium)
  * @body    { latitude, longitude, sources: ['openweather', 'weatherapi'] }
  */
 router.post('/weather-sources', async (req, res) => {
   try {
     const userId = req.user.userId;
 
-    // Check Premium-Zugriff
+    // Check Premium access
     const hasAccess = await Subscription.checkFeatureAccess(userId, 'multiple_sources');
     if (!hasAccess) {
       return res.status(403).json({
-        message: 'Feature erfordert Premium-Abonnement',
+        message: 'Feature requires Premium subscription',
       });
     }
 
@@ -29,7 +29,7 @@ router.post('/weather-sources', async (req, res) => {
 
     if (!latitude || !longitude || !sources) {
       return res.status(400).json({
-        message: 'Latitude, Longitude und Quellen erforderlich',
+        message: 'Latitude, Longitude and sources required',
       });
     }
 
@@ -40,7 +40,7 @@ router.post('/weather-sources', async (req, res) => {
     );
 
     res.status(200).json({
-      message: 'Aggregierte Wetterdaten',
+      message: 'Aggregated weather data',
       data: weatherData,
     });
   } catch (error) {
@@ -50,18 +50,18 @@ router.post('/weather-sources', async (req, res) => {
 
 /**
  * @route   GET /api/premium/map-layers
- * @desc    Premium-Kartenebenen abrufen (Radar, Satellit, etc.)
+ * @desc    Get Premium map layers (Radar, Satellite, etc.)
  * @query   { latitude, longitude, zoom }
  */
 router.get('/map-layers', async (req, res) => {
   try {
     const userId = req.user.userId;
 
-    // Check Premium-Zugriff
+    // Check Premium access
     const hasAccess = await Subscription.checkFeatureAccess(userId, 'map_layers');
     if (!hasAccess) {
       return res.status(403).json({
-        message: 'Feature erfordert Premium-Abonnement',
+        message: 'Feature requires Premium subscription',
       });
     }
 
@@ -69,7 +69,7 @@ router.get('/map-layers', async (req, res) => {
 
     if (!latitude || !longitude) {
       return res.status(400).json({
-        message: 'Latitude und Longitude erforderlich',
+        message: 'Latitude and Longitude required',
       });
     }
 
@@ -80,7 +80,7 @@ router.get('/map-layers', async (req, res) => {
     );
 
     res.status(200).json({
-      message: 'Kartenebenen abgerufen',
+      message: 'Map layers retrieved',
       layers: mapLayers,
     });
   } catch (error) {
@@ -90,18 +90,18 @@ router.get('/map-layers', async (req, res) => {
 
 /**
  * @route   POST /api/premium/weather-alert
- * @desc    Push-Benachrichtigung für Wetterwarnungen (Premium)
+ * @desc    Push notification for weather alerts (Premium)
  * @body    { latitude, longitude, alertType, message }
  */
 router.post('/weather-alert', async (req, res) => {
   try {
     const userId = req.user.userId;
 
-    // Check Premium-Zugriff
+    // Check Premium access
     const hasAccess = await Subscription.checkFeatureAccess(userId, 'push_notifications');
     if (!hasAccess) {
       return res.status(403).json({
-        message: 'Feature erfordert Premium-Abonnement',
+        message: 'Feature requires Premium subscription',
       });
     }
 
@@ -109,7 +109,7 @@ router.post('/weather-alert', async (req, res) => {
 
     if (!latitude || !longitude || !alertType) {
       return res.status(400).json({
-        message: 'Koordinaten und Warntyp erforderlich',
+        message: 'Coordinates and alert type required',
       });
     }
 
@@ -123,7 +123,7 @@ router.post('/weather-alert', async (req, res) => {
     );
 
     res.status(201).json({
-      message: 'Benachrichtigung gesendet',
+      message: 'Notification sent',
       notification,
     });
   } catch (error) {
