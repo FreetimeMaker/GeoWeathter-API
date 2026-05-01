@@ -1,8 +1,9 @@
 require('dotenv').config();
-
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
+const session = require('express-session');
+const passport = require('./config/passport');
 const errorHandler = require('./middleware/errorHandler');
 const database = require('./config/database');
 
@@ -24,6 +25,18 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Session middleware for Passport OAuth
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'dev-secret-change-in-production',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: process.env.NODE_ENV === 'production' },
+}));
+
+// Initialize Passport
+app.use(passport.initialize());
+app.use(passport.session());
+
 // Health Check
 app.get('/api/health', async (req, res) => {
   try {
@@ -36,18 +49,18 @@ app.get('/api/health', async (req, res) => {
     } else {
       dbStatusText = 'disconnected';
     }
-    res.status(200).json({ 
-      status: 'OK', 
+    res.status(200).json({
+      status: 'OK',
       database: dbStatusText,
-      timestamp: new Date() 
+      timestamp: new Date(),
     });
   } catch (error) {
     console.error('Health check error:', error.message);
-    res.status(200).json({ 
-      status: 'OK', 
+    res.status(200).json({
+      status: 'OK',
       database: 'error',
       error: error.message,
-      timestamp: new Date() 
+      timestamp: new Date(),
     });
   }
 });
@@ -60,13 +73,14 @@ app.get('/', (req, res) => {
     endpoints: {
       health: '/api/health',
       auth: '/api/auth',
+      github: '/api/auth/github',
       favorites: '/api/favorites',
       weatherHistory: '/api/weather-history',
       subscriptions: '/api/subscriptions',
       'subscriptions/pricing': '/api/subscriptions/pricing',
       'subscriptions/buy': '/api/subscriptions/buy',
-      premium: '/api/premium'
-    }
+      premium: '/api/premium',
+    },
   });
 });
 
@@ -88,6 +102,8 @@ app.use(errorHandler);
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-  console.log(`GeoWeather API läuft auf Port ${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+  console. log('GeoWeather API running on port ' + PORT);
+  console. log('Environment: ' + (process.env.NODE_ENV || 'development'));
 });
+
+module. exports = app;

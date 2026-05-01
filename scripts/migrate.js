@@ -2,13 +2,15 @@ require('dotenv').config();
 const pool = require('../src/config/database');
 
 const migrations = [
-  // Users table
+// Users table
   `
     CREATE TABLE IF NOT EXISTS users (
       id UUID PRIMARY KEY,
-      username VARCHAR(255) UNIQUE NOT NULL,
-      password VARCHAR(255) NOT NULL,
-      name VARCHAR(255) NOT NULL,
+      username VARCHAR(255) UNIQUE,
+      email VARCHAR(255) UNIQUE,
+      github_oid VARCHAR(255) UNIQUE,
+      password VARCHAR(255),
+      name VARCHAR(255),
       subscription_tier VARCHAR(50) DEFAULT 'free',
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
