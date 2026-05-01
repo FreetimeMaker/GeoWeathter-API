@@ -1,7 +1,13 @@
 const { Pool } = require('pg');
 
 // Vercel Postgres uses POSTGRES_CONNECTION_STRING env variable
-const connectionString = process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL;
+// Trim and check if connection string is valid
+const rawConnectionString = process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL;
+const connectionString = rawConnectionString ? rawConnectionString.trim() : '';
+
+// Check if we have valid connection config
+const hasValidConnection = connectionString.length > 0 || 
+  (process.env.DB_HOST && process.env.DB_HOST.length > 0);
 
 // Fallback to individual env vars for local development
 const poolConfig = connectionString
@@ -14,23 +20,27 @@ const poolConfig = connectionString
       database: process.env.DB_NAME || 'geoweather',
     };
 
-const pool = new Pool({
-  ...poolConfig,
-  // Vercel serverless optimization
-  max: process.env.NODE_ENV === 'production' ? 1 : 5,
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 10000,
-});
+// Only create pool if we have valid connection config
+let pool = null;
 
-pool.on('error', (err) => {
-  console.error('Unexpected error on idle client', err);
-});
+if (hasValidConnection) {
+  pool = new Pool({
+    ...poolConfig,
+    // Vercel serverless optimization
+    max: process.env.NODE_ENV === 'production' ? 1 : 5,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 10000,
+  });
+
+  pool.on('error', (err) => {
+    console.error('Unexpected error on idle client', err);
+  });
+}
 
 // Health check for database connection
-pool.healthCheck = async () => {
+const healthCheck = async () => {
   // If no connection string is configured, skip DB check
-  if (!connectionString && !process.env.DB_HOST) {
-    console.log('No database configured, skipping health check');
+  if (!pool) {
     return null;
   }
   
@@ -43,4 +53,13 @@ pool.healthCheck = async () => {
   }
 };
 
-module.exports = pool;
+// Export pool or a proxy object
+const dbProxy = pool || {
+  query: async () => { throw new Error('Database not configured'); },
+  end: async () => {},
+};
+
+// Attach healthCheck to proxy
+dbProxy.healthCheck = healthCheck;
+
+module.exports = dbProxy;
