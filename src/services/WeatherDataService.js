@@ -53,7 +53,7 @@ const WeatherDataService = {
     }
   },
 
-  // Aggregiere Daten von mehreren Quellen (Premium Feature)
+  // Aggregiere Daten von mehreren Quellen (Freemium Feature)
   async getAggregatedWeather(latitude, longitude, sources) {
     const results = {};
 

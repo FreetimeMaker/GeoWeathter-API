@@ -34,22 +34,22 @@
 - ✅ Monatliche Statistiken & Durchschnitte
 - ✅ Jährliche Trends
 - ✅ Automatische Archivierung alter Daten (>1 Jahr)
-- ✅ CSV-Export (Premium)
+- ✅ CSV-Export (Freemium)
 
 **Dateien:**
 - `src/models/WeatherHistory.js` - Datenbankmodell
 - `src/controllers/WeatherHistoryController.js` - Business Logic
 - `src/routes/weatherHistory.js` - API Endpoints
 
-### 4. **Premium-Abonnement-System**
-- ✅ Drei Tiers: Free, Premium, Enterprise
+### 4. **Freemium-Abonnement-System**
+- ✅ Drei Tiers: Free, Freemium, Enterprise
 - ✅ Unterschiedliche Feature-Limits pro Tier
 - ✅ Abo-Verwaltung (erstellen, upgraden)
 - ✅ Feature-Access-Kontrolle
 - ✅ Ablauf-Tracking
 
 **Tiers:**
-| | Free | Premium | Enterprise |
+| | Free | Freemium | Enterprise |
 |---|:---:|:-------:|:----------:|
 | Favoriten | 5 | 50 | Unlimited |
 | History-Tage | 30 | 365 | 1825 |
@@ -63,7 +63,7 @@
 - `src/controllers/SubscriptionController.js` - Business Logic
 - `src/routes/subscriptions.js` - API Endpoints
 
-### 5. **Premium-Features**
+### 5. **Freemium-Features**
 - ✅ Multi-Source Wetterdaten (OpenWeather, WeatherAPI)
 - ✅ Aggregation von Daten-Quellen
 - ✅ Karten-Layer (Radar, Satellit, Heatmap, Wind)
@@ -74,7 +74,7 @@
 - `src/services/WeatherDataService.js` - Weather API Integration
 - `src/services/MapTileService.js` - Map Tiles & Layers
 - `src/services/PushNotificationService.js` - Notifications
-- `src/routes/premium.js` - Premium API Endpoints
+- `src/routes/freemium.js` - Freemium API Endpoints
 
 ### 6. **Datenbankschema**
 - ✅ 5 Haupttabellen + Indizes
@@ -174,7 +174,7 @@
 2. Server speichert Daten mit Timestamp
 3. Automatische Aggregation für monatliche/jährliche Stats
 4. Alte Daten (>1 Jahr) werden archiviert
-5. Premium-Benutzer können exportieren
+5. Freemium-Benutzer können exportieren
 
 ### Abo-System
 1. Neuer Benutzer = automatisch Free-Tier
@@ -233,7 +233,7 @@ Dokumentiert für:
 ## 🎯 Nächste Schritte (Optional)
 
 1. **Payment-Integration**
-   - Stripe-Integration für Premium-Abo
+   - Stripe-Integration für Freemium-Abo
    - Zahlungs-Webhooks
 
 2. **Real-time Features**
@@ -267,7 +267,7 @@ Dokumentiert für:
 | Favorites | 6 |
 | Weather History | 5 |
 | Subscriptions | 4 |
-| Premium | 3 |
+| Freemium | 3 |
 | Utility | 1 (Health) |
 | **Gesamt** | **24** |
 
@@ -288,11 +288,11 @@ Es wurde eine **produktionsreife REST API** für eine Wetter-App mit allen angef
 
 ✅ Favoriten-Sync über Geräte-Grenzen
 ✅ Wetter-History mit Cloud-Archivierung
-✅ Premium-Abonnement-System (Free/Premium/Enterprise)
+✅ Freemium-Abonnement-System (Free/Freemium/Enterprise)
 ✅ Multi-Source Wetterdaten Integration
 ✅ Push-Benachrichtigungen
 ✅ Karten-Layer (Radar, Satellit, etc.)
-✅ Daten-Export für Premium-Nutzer
+✅ Daten-Export für Freemium-Nutzer
 
 Die API ist:
 - 🔒 Sicher

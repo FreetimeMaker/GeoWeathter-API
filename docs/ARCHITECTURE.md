@@ -45,7 +45,7 @@
 - Favorite Management
 - Weather Data Processing
 - Subscription Management
-- Premium Features
+- Freemium Features
 
 ### 3. Data Access Layer (Models)
 - Database Queries
@@ -108,18 +108,18 @@ Device A      Device B      Device C
          └─ Archival after 1 year
 ```
 
-## Premium Feature Flow
+## Freemium Feature Flow
 
 ```
 ┌──────────────────────────┐
-│  User: Premium Subscriber│
+│  User: Freemium Subscriber│
 └────────────┬─────────────┘
              │
              ▼
     ┌──────────────────┐
     │ Check Tier       │
     │ subscription:    │
-    │ 'premium'        │
+    │ 'freemium'        │
     └────────┬─────────┘
              │ ✓ Authorized
     ┌────────┴──────────────────┐
@@ -138,7 +138,7 @@ Device A      Device B      Device C
                        │
                        ▼
             ┌──────────────────┐
-            │ Premium Response │
+            │ Freemium Response │
             │ (aggregated)     │
             └──────────────────┘
 ```

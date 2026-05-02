@@ -15,7 +15,7 @@ const Subscription = {
   // One-time lifetime pricing (NO monthly/yearly)
   PRICING: {
     freemium: {
-      one_time: 5.00, // One-time lifetime price for premium tier
+      one_time: 5.00, // One-time lifetime price for freemium tier
     },
   },
 

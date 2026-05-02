@@ -13,11 +13,11 @@ Die GeoWeather API ist eine Cloud-basierte Backend-Lösung für eine Wetter-App 
 - App speichert lokale Messungen (Temperatur, Luftdruck, Sensoren)
 - Cloud speichert Langzeit-Graphen für Trendanalyse
 - Monatliche und jährliche Statistiken
-- CSV-Export für Premium-Benutzer
+- CSV-Export für Freemium-Benutzer
 
-### 3. **Premium-Open-SaaS**
+### 3. **Freemium-Open-SaaS**
 - **Kostenlos**: 5 Favoriten, 30 Tage History, 1 Datenquelle
-- **Premium**: 50 Favoriten, 365 Tage History, 3 Datenquellen, Push-Benachrichtigungen, Karten-Layer
+- **Freemium**: 50 Favoriten, 365 Tage History, 3 Datenquellen, Push-Benachrichtigungen, Karten-Layer
 - **Enterprise**: Unbegrenzte Ressourcen, 10 Datenquellen, erweiterte API-Limits
 
 ## Installation
@@ -207,7 +207,7 @@ Query Parameter:
 - \`year\` (required)
 
 **GET /api/weather-history/export**
-Wetterdaten als CSV exportieren (Premium)
+Wetterdaten als CSV exportieren (Freemium)
 
 Query Parameter:
 - \`startDate\` (required)
@@ -223,7 +223,7 @@ Neues Abonnement erstellen
 
 \`\`\`json
 {
-  "tier": "premium",
+  "tier": "freemium",
   "paymentMethod": "stripe"
 }
 \`\`\`
@@ -244,7 +244,7 @@ Verfügbare Features basierend auf Tier
 Response:
 \`\`\`json
 {
-  "tier": "premium",
+  "tier": "freemium",
   "features": {
     "maxFavorites": 50,
     "maxHistoryDays": 365,
@@ -263,7 +263,7 @@ Response:
 - \`email\`: VARCHAR (Unique)
 - \`password\`: VARCHAR (hashed)
 - \`name\`: VARCHAR
-- \`subscription_tier\`: VARCHAR (free, premium, enterprise)
+- \`subscription_tier\`: VARCHAR (free, freemium, enterprise)
 - \`created_at\`: TIMESTAMP
 - \`updated_at\`: TIMESTAMP
 
@@ -292,7 +292,7 @@ Response:
 ### Subscriptions
 - \`id\`: UUID (Primary Key)
 - \`user_id\`: UUID (Foreign Key)
-- \`tier\`: VARCHAR (free, premium, enterprise)
+- \`tier\`: VARCHAR (free, freemium, enterprise)
 - \`payment_method\`: VARCHAR
 - \`created_at\`: TIMESTAMP
 - \`expires_at\`: TIMESTAMP

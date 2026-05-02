@@ -6,8 +6,8 @@
 
 1. ✅ **Update Subscription Model** (`src/models/Subscription.js`)
    - ✅ Added PAYMENT_TYPES: 'subscription' (recurring) vs 'one_time' (lifetime)
-   - ✅ Added LIFETIME_PRICING for one-time purchases (Premium: $199.99)
-   - ✅ Added UPGRADE_PATHS to define valid upgrade paths (free → premium)
+   - ✅ Added LIFETIME_PRICING for one-time purchases (Freemium: $199.99)
+   - ✅ Added UPGRADE_PATHS to define valid upgrade paths (free → freemium)
    - ✅ Added calculateUpgradeCredit() method
    - ✅ Added getUpgradePricing() method
    - ✅ Updated createSubscription() to support paymentType and billingCycle
@@ -30,7 +30,7 @@
 - `one_time` = lifetime purchase
 
 **Lifetime Pricing:**
-- Premium Lifetime: $199.99 (one-time)
+- Freemium Lifetime: $199.99 (one-time)
 
 **Upgrade Logic:**
 - FREE can upgrade to PREMIUM
@@ -49,5 +49,5 @@ ADD COLUMN original_price DECIMAL(10,2) DEFAULT 0;
 
 ### Testing Endpoints:
 - GET /api/subscriptions/pricing - See all pricing options
-- GET /api/subscriptions/upgrade-pricing?targetTier=premium - Get upgrade pricing
+- GET /api/subscriptions/upgrade-pricing?targetTier=freemium - Get upgrade pricing
 - POST /api/subscriptions/upgrade - Process upgrade

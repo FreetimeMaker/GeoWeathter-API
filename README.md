@@ -4,7 +4,7 @@
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-%3E%3D15-blue)](https://www.postgresql.org/)
 [![Tests](https://img.shields.io/badge/Tests-Jest-green?logo=jest)](https://jestjs.io/)
 
-Eine produktionsreife Cloud-basierte REST API für eine Wetter-Anwendung mit **Favoriten-Sync**, **History-Archiv** und flexiblem **Premium-Abonnement-System**.
+Eine produktionsreife Cloud-basierte REST API für eine Wetter-Anwendung mit **Favoriten-Sync**, **History-Archiv** und flexiblem **Freemium-Abonnement-System**.
 
 [🚀 Quick Start](#-quick-start) • [📚 Dokumentation](#-dokumentation) • [🤝 Beiträge](#-contributing) • [📄 Lizenz](#-license)
 
@@ -23,11 +23,11 @@ Eine produktionsreife Cloud-basierte REST API für eine Wetter-Anwendung mit **F
 - ✅ Langzeit-Graphen und Trends
 - ✅ Monatliche und jährliche Statistiken
 - ✅ Automatische Archivierung alter Daten (>1 Jahr)
-- ✅ CSV-Export für Premium-Nutzer
+- ✅ CSV-Export für Freemium-Nutzer
 
-### 3. 💰 **Premium-Open-SaaS-Modell**
+### 3. 💰 **Freemium-Open-SaaS-Modell**
 
-| Feature | Free | Premium | Enterprise |
+| Feature | Free | Freemium | Enterprise |
 |---------|:----:|:-------:|:----------:|
 | Favoriten | 5 | 50 | ∞ |
 | History-Tage | 30 | 365 | 1825 |
@@ -38,7 +38,7 @@ Eine produktionsreife Cloud-basierte REST API für eine Wetter-Anwendung mit **F
 | API Rate Limits | 100 req/hr | 10k req/hr | Unlimited |
 | Support | Community | Email | Priority |
 
-### 4. 🎯 **Premium-Features**
+### 4. 🎯 **Freemium-Features**
 - ✅ Multi-Source Wetterdaten (OpenWeather, WeatherAPI)
 - ✅ Unwetter-Push-Benachrichtigungen
 - ✅ Karten-Layer (Radar, Satellit, Heatmap, Wind)
@@ -125,12 +125,12 @@ curl -X POST http://localhost:3000/api/weather-history/record \
   }'
 ```
 
-### 4. Premium-Abo erstellen
+### 4. Freemium-Abo erstellen
 ```bash
 curl -X POST http://localhost:3000/api/subscriptions \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: application/json" \
-  -d '{"tier": "premium", "paymentMethod": "stripe"}'
+  -d '{"tier": "freemium", "paymentMethod": "stripe"}'
 ```
 
 ---
@@ -157,7 +157,7 @@ curl -X POST http://localhost:3000/api/subscriptions \
 | Favorites | 6 | create, getAll, update, sync |
 | History | 5 | record, getHistory, analytics, export |
 | Subscriptions | 4 | create, get, upgrade, features |
-| Premium | 3 | weather-sources, map-layers, alert |
+| Freemium | 3 | weather-sources, map-layers, alert |
 | **Total** | **24** | - |
 
 ---

@@ -9,19 +9,19 @@ const router = express.Router();
 router.use(authMiddleware);
 
 /**
- * @route   POST /api/premium/weather-sources
- * @desc    Get weather data from multiple sources (Premium)
+ * @route   POST /api/freemium/weather-sources
+ * @desc    Get weather data from multiple sources (Freemium)
  * @body    { latitude, longitude, sources: ['openweather', 'weatherapi'] }
  */
 router.post('/weather-sources', async (req, res) => {
   try {
     const userId = req.user.userId;
 
-    // Check Premium access
+    // Check Freemium access
     const hasAccess = await Subscription.checkFeatureAccess(userId, 'multiple_sources');
     if (!hasAccess) {
       return res.status(403).json({
-        message: 'Feature requires Premium subscription',
+        message: 'Feature requires Freemium subscription',
       });
     }
 
@@ -49,19 +49,19 @@ router.post('/weather-sources', async (req, res) => {
 });
 
 /**
- * @route   GET /api/premium/map-layers
- * @desc    Get Premium map layers (Radar, Satellite, etc.)
+ * @route   GET /api/freemium/map-layers
+ * @desc    Get Freemium map layers (Radar, Satellite, etc.)
  * @query   { latitude, longitude, zoom }
  */
 router.get('/map-layers', async (req, res) => {
   try {
     const userId = req.user.userId;
 
-    // Check Premium access
+    // Check Freemium access
     const hasAccess = await Subscription.checkFeatureAccess(userId, 'map_layers');
     if (!hasAccess) {
       return res.status(403).json({
-        message: 'Feature requires Premium subscription',
+        message: 'Feature requires Freemium subscription',
       });
     }
 
@@ -73,7 +73,7 @@ router.get('/map-layers', async (req, res) => {
       });
     }
 
-    const mapLayers = await MapTileService.getPremiumMapLayers(
+    const mapLayers = await MapTileService.getFreemiumMapLayers(
       parseFloat(latitude),
       parseFloat(longitude),
       parseInt(zoom) || 10
@@ -89,19 +89,19 @@ router.get('/map-layers', async (req, res) => {
 });
 
 /**
- * @route   POST /api/premium/weather-alert
- * @desc    Push notification for weather alerts (Premium)
+ * @route   POST /api/freemium/weather-alert
+ * @desc    Push notification for weather alerts (Freemium)
  * @body    { latitude, longitude, alertType, message }
  */
 router.post('/weather-alert', async (req, res) => {
   try {
     const userId = req.user.userId;
 
-    // Check Premium access
+    // Check Freemium access
     const hasAccess = await Subscription.checkFeatureAccess(userId, 'push_notifications');
     if (!hasAccess) {
       return res.status(403).json({
-        message: 'Feature requires Premium subscription',
+        message: 'Feature requires Freemium subscription',
       });
     }
 

@@ -17,12 +17,12 @@ Eine **vollständig funktionsfähige REST API** für eine Wetter-App mit allen a
    - Monatliche und jährliche Analytics
    - Automatische Archivierung nach 1 Jahr
 
-3. **💰 Premium-Open-SaaS**
+3. **💰 Freemium-Open-SaaS**
    - **Kostenlos**: 5 Favoriten, 30 Tage History, 1 Datenquelle
-   - **Premium**: 50 Favoriten, 365 Tage History, 3 Datenquellen, Push-Benachrichtigungen, Karten-Layer
+   - **Freemium**: 50 Favoriten, 365 Tage History, 3 Datenquellen, Push-Benachrichtigungen, Karten-Layer
    - **Enterprise**: Unlimited mit allen Features
 
-4. **🎯 Premium-Features**
+4. **🎯 Freemium-Features**
    - Mehrere Datenquellen (OpenWeather, WeatherAPI)
    - Unwetter-Push-Benachrichtigungen
    - Karten-Layer (Radar, Satellit, Heatmap, Wind)
@@ -81,7 +81,7 @@ Eine **vollständig funktionsfähige REST API** für eine Wetter-App mit allen a
 - `src/routes/favorites.js` - /api/favorites/* Endpoints
 - `src/routes/weatherHistory.js` - /api/weather-history/* Endpoints
 - `src/routes/subscriptions.js` - /api/subscriptions/* Endpoints
-- `src/routes/premium.js` - /api/premium/* Endpoints (Premium-Features)
+- `src/routes/freemium.js` - /api/freemium/* Endpoints (Freemium-Features)
 
 **Services (3 Dateien)**
 - `src/services/WeatherDataService.js` - API Integration (OpenWeather, WeatherAPI)
@@ -109,7 +109,7 @@ Eine **vollständig funktionsfähige REST API** für eine Wetter-App mit allen a
 | Favoriten | 6 | create, getAll, update, sync |
 | History | 5 | record, getHistory, analytics, export |
 | Subscriptions | 4 | create, get, upgrade, features |
-| Premium | 3 | weather-sources, map-layers, alert |
+| Freemium | 3 | weather-sources, map-layers, alert |
 | Utility | 1 | health check |
 
 ## 🚀 Quick Start
@@ -189,13 +189,13 @@ curl -X POST http://localhost:3000/api/weather-history/record \
   }'
 ```
 
-### 4. Premium-Abo aktivieren
+### 4. Freemium-Abo aktivieren
 
 ```bash
 curl -X POST http://localhost:3000/api/subscriptions \
   -H "Authorization: Bearer <YOUR_TOKEN>" \
   -H "Content-Type: application/json" \
-  -d '{"tier": "premium", "paymentMethod": "stripe"}'
+  -d '{"tier": "freemium", "paymentMethod": "stripe"}'
 ```
 
 ## 📚 Dokumentation

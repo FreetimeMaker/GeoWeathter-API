@@ -23,8 +23,8 @@ const MapTileService = {
     return `https://earth.nullschool.net/current/wind/surface/level/orthographic`;
   },
 
-  // Premium Feature: Kombinierte Kartenebenen
-  async getPremiumMapLayers(latitude, longitude, zoom) {
+  // Freemium Feature: Kombinierte Kartenebenen
+  async getFreemiumMapLayers(latitude, longitude, zoom) {
     return {
       radar: this.getRadarTileUrl(zoom, 0, 0),
       satellite: this.getSatelliteTileUrl(zoom, 0, 0),

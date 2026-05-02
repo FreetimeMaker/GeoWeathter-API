@@ -7,8 +7,8 @@ Dies ist eine vollständig funktionsfähige REST API für eine Wetter-App mit:
 ✅ **Authentifizierung** - JWT-basierte Benutzer-Authentifizierung
 ✅ **Favoriten-Sync** - Geräteübergreifende Synchronisation von Standorten
 ✅ **Wetter-Archiv** - Speichern und Analysieren von Wetterdaten
-✅ **Premium-Features** - Multi-Source Wetterdaten, Push-Benachrichtigungen, Karten-Layer
-✅ **Subscriptions** - Free, Premium, Enterprise Tiers
+✅ **Freemium-Features** - Multi-Source Wetterdaten, Push-Benachrichtigungen, Karten-Layer
+✅ **Subscriptions** - Free, Freemium, Enterprise Tiers
 
 ## 🚀 Installation & Start
 
@@ -46,17 +46,17 @@ npm run dev
 - `POST /api/weather-history/record` - Daten aufzeichnen
 - `GET /api/weather-history` - Verlauf abrufen
 - `GET /api/weather-history/analytics/monthly` - Monatliche Stats
-- `GET /api/weather-history/export` - Exportieren (Premium)
+- `GET /api/weather-history/export` - Exportieren (Freemium)
 
 ### Subscriptions (mit Token)
 - `GET /api/subscriptions` - Aktuelles Abo
 - `POST /api/subscriptions` - Neues Abo
 - `PUT /api/subscriptions` - Upgrade
 
-### Premium Features (mit Token + Premium-Abo)
-- `POST /api/premium/weather-sources` - Multi-Source Daten
-- `GET /api/premium/map-layers` - Karten-Layer
-- `POST /api/premium/weather-alert` - Push-Benachrichtigungen
+### Freemium Features (mit Token + Freemium-Abo)
+- `POST /api/freemium/weather-sources` - Multi-Source Daten
+- `GET /api/freemium/map-layers` - Karten-Layer
+- `POST /api/freemium/weather-alert` - Push-Benachrichtigungen
 
 ## 📝 Schnelle Beispiele
 
@@ -103,14 +103,14 @@ curl -X POST http://localhost:3000/api/weather-history/record \
   }'
 ```
 
-### 4. Premium-Abo erstellen
+### 4. Freemium-Abo erstellen
 
 ```bash
 curl -X POST http://localhost:3000/api/subscriptions \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
-    "tier": "premium",
+    "tier": "freemium",
     "paymentMethod": "stripe"
   }'
 ```
@@ -159,7 +159,7 @@ Token werden beim Login/Register erhalten und sind gültig für `JWT_EXPIRY` (de
 
 ## 💰 Subscription Tiers
 
-| Feature | Free | Premium | Enterprise |
+| Feature | Free | Freemium | Enterprise |
 |---------|:----:|:-------:|:----------:|
 | Favoriten | 5 | 50 | ∞ |
 | History (Tage) | 30 | 365 | 1825 |
@@ -195,7 +195,7 @@ npm run db:migrate      # Migrationen ausführen
 - **Firebase Cloud Messaging** - `PUSH_NOTIFICATION_SERVICE=firebase`
 
 ### Payment (geplant)
-- **Stripe** - Für Premium-Abo
+- **Stripe** - Für Freemium-Abo
 
 ## 📚 Dokumentation
 

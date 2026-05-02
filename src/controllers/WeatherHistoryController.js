@@ -124,7 +124,7 @@ const WeatherHistoryController = {
       const hasAccess = await Subscription.checkFeatureAccess(userId, 'data_export');
       if (!hasAccess) {
         return res.status(403).json({ 
-          message: 'Data export requires Premium subscription' 
+          message: 'Data export requires Freemium subscription' 
         });
       }
 

@@ -41,7 +41,7 @@ router.get('/analytics/yearly', WeatherHistoryController.getYearlyTrend);
 
 /**
  * @route   GET /api/weather-history/export
- * @desc    Export weather data (Premium only)
+ * @desc    Export weather data (Freemium only)
  * @query   { startDate, endDate }
  * @returns { CSV }
  */

@@ -3,7 +3,7 @@
 ## Repository Setup
 
 ### Beschreibung
-Ein produktionsreife REST API für Wetter-App mit Cloud-Sync, History-Archiv und Premium-Features
+Ein produktionsreife REST API für Wetter-App mit Cloud-Sync, History-Archiv und Freemium-Features
 
 ### Topics
 - `weather-api`
@@ -198,7 +198,7 @@ Ein produktionsreife REST API für Wetter-App mit Cloud-Sync, History-Archiv und
 
 ### Support Levels
 - **Community:** GitHub Issues (Best effort)
-- **Premium:** Email + Priority support
+- **Freemium:** Email + Priority support
 - **Enterprise:** Dedicated support
 
 ---

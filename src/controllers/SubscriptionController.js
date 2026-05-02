@@ -32,7 +32,7 @@ const SubscriptionController = {
 
       if (!subscription) {
         return res.status(200).json({
-          message: 'User does not have Premium subscription',
+          message: 'User does not have Freemium subscription',
           subscription: {
             tier: Subscription.TIERS.FREE,
             features: Subscription.FEATURES[Subscription.TIERS.FREE],

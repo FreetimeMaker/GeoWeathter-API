@@ -45,7 +45,7 @@ GeoWeathter-API/
 │   │   ├── favorites.js            # /api/favorites/*
 │   │   ├── weatherHistory.js       # /api/weather-history/*
 │   │   ├── subscriptions.js        # /api/subscriptions/*
-│   │   └── premium.js              # /api/premium/*
+│   │   └── freemium.js              # /api/freemium/*
 │   │
 │   ├── 📂 utils/
 │   │   ├── validators.js           # Email, Koordinaten, Temp, etc.
@@ -84,11 +84,11 @@ KERNKOMPONENTEN:
    • Temperatur, Luftdruck, Sensoren
    • Monatliche & jährliche Analytics
    • Automatische 1-Jahres-Archivierung
-   • CSV-Export (Premium)
+   • CSV-Export (Freemium)
 
 💰 SUBSCRIPTION-SYSTEM
    3 Tiers: Free (5 Favoriten, 30 Tage) →
-             Premium (50 Favoriten, 365 Tage) →
+             Freemium (50 Favoriten, 365 Tage) →
              Enterprise (Unlimited)
 
 🎯 PREMIUM-FEATURES
@@ -144,9 +144,9 @@ SUBSCRIPTIONS (4)
   GET    /api/subscriptions/features
 
 PREMIUM (3)
-  POST   /api/premium/weather-sources
-  GET    /api/premium/map-layers
-  POST   /api/premium/weather-alert
+  POST   /api/freemium/weather-sources
+  GET    /api/freemium/map-layers
+  POST   /api/freemium/weather-alert
 
 UTILITY (1)
   GET    /api/health
