@@ -13,6 +13,7 @@ const favoriteRoutes = require('./routes/favorites');
 const weatherHistoryRoutes = require('./routes/weatherHistory');
 const subscriptionRoutes = require('./routes/subscriptions');
 const freemiumRoutes = require('./routes/freemium');
+const premiumRoutes = require('./routes/premium');
 
 const app = express();
 
@@ -80,6 +81,7 @@ app.get('/', (req, res) => {
       'subscriptions/pricing': '/api/subscriptions/pricing',
       'subscriptions/buy': '/api/subscriptions/buy',
       freemium: '/api/freemium',
+      premium: '/api/premium',
     },
   });
 });
@@ -90,6 +92,7 @@ app.use('/api/favorites', favoriteRoutes);
 app.use('/api/weather-history', weatherHistoryRoutes);
 app.use('/api/subscriptions', subscriptionRoutes);
 app.use('/api/freemium', freemiumRoutes);
+app.use('/api/premium', premiumRoutes);
 
 // 404 Handler
 app.use((req, res) => {
