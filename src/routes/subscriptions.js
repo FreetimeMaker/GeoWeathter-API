@@ -122,13 +122,14 @@ router.post('/crypto/instructions', async (req, res) => {
 
 /**
  * @route   POST /api/subscriptions/crypto/verify
- * @desc    Verify a crypto payment (placeholder)
- * @body    { txHash, crypto }
+ * @desc    Verify a crypto payment
+ * @body    { txHash, crypto, tier }
  * @returns { payment status }
  */
 router.post('/crypto/verify', async (req, res) => {
   try {
-    const { txHash, crypto = 'eth' } = req.body;
+    const { txHash, crypto = 'eth', tier } = req.body;
+    const userId = req.user.userId;
 
     if (!txHash) {
       return res.status(400).json({
@@ -136,7 +137,36 @@ router.post('/crypto/verify', async (req, res) => {
       });
     }
 
-    const status = await CryptoPaymentService.verifyPayment(txHash, crypto);
+    // Get payment details if tier provided
+    let expectedAmount = null;
+    let merchantWallet = null;
+    
+    if (tier) {
+      try {
+        const paymentDetails = await CryptoPaymentService.getPaymentDetails(tier, crypto);
+        expectedAmount = paymentDetails.crypto.cryptoAmount;
+        merchantWallet = CryptoPaymentService.getMerchantWallet(crypto);
+      } catch (e) {
+        console.error('Failed to get payment details:', e.message);
+      }
+    }
+
+    // Get cached status first
+    const cachedStatus = CryptoPaymentService.getPaymentStatus(txHash);
+    if (cachedStatus) {
+      return res.status(200).json({
+        message: 'Payment status (cached)',
+        ...cachedStatus,
+      });
+    }
+
+    // Verify with blockchain
+    const status = await CryptoPaymentService.verifyPaymentStatus(
+      txHash, 
+      crypto, 
+      expectedAmount, 
+      merchantWallet
+    );
 
     res.status(200).json({
       message: 'Payment verification',

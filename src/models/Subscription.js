@@ -5,6 +5,7 @@ const Subscription = {
   TIERS: {
     FREE: 'free',
     FREEMIUM: 'freemium',
+    PREMIUM: 'premium', // Reserved for future use
   },
 
   // ONE-TIME payment types (no recurring)
@@ -17,29 +18,40 @@ const Subscription = {
     freemium: {
       one_time: 5.00, // One-time lifetime price for freemium tier
     },
+    premium: {
+      one_time: 10.00, // One-time lifetime price for premium tier
+    }
   },
 
 // Define valid upgrade paths: from -> [allowed upgrades to]
   UPGRADE_PATHS: {
     free: ['freemium'],
-    freemium: [], // Cannot upgrade from freemium (top tier)
+    freemium: [premium], // Cannot upgrade from freemium (top tier)
   },
 
   FEATURES: {
     free: {
-      maxFavorites: 5,
+      maxFavorites: 4,
       maxHistoryDays: 3,
       dataSourcesCount: 1,
       pushNotifications: false,
       mapLayers: false,
       dataExport: true,
     },
-freemium: {
+    freemium: {
       maxFavorites: 8,
       maxHistoryDays: 5,
       dataSourcesCount: 2,
       pushNotifications: true,
       mapLayers: false,
+      dataExport: true,
+    },
+    premium: {
+      maxFavorites: 12,
+      maxHistoryDays: 7,
+      dataSourcesCount: 3,
+      pushNotifications: true,
+      mapLayers: true,
       dataExport: true,
     },
   },

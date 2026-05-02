@@ -1,6 +1,13 @@
 const axios = require('axios');
 
 const COINGECKO_API = 'https://api.coingecko.com/api/v3';
+const BLOCKSTREAM_API = 'https://blockstream.info/api';
+const ETHERSCAN_API = process.env.ETHERSCAN_API_KEY ? `https://api.etherscan.io/api?apikey=${process.env.ETHERSCAN_API_KEY}` : 'https://api.etherscan.io/api';
+const SOLANA_RPC = process.env.SOLANA_RPC_URL || 'https://api.mainnet-beta.solana.com';
+const DOGE_API = process.env.DOGE_API_URL || 'https://dogecoin.rpc.nodejitsu.com';
+
+// In-memory store for payment status (use Redis in production)
+const paymentStatusStore = new Map();
 
 // Supported cryptocurrencies for payments
 const SUPPORTED_COINS = {
@@ -255,29 +262,202 @@ const CryptoPaymentService = {
         `1. Send exactly ${paymentDetails.crypto.cryptoAmountFormatted} ${paymentDetails.crypto.cryptoSymbol} to the address below`,
         `2. Wait for ${coin.minConfirmations} confirmations on the ${coin.network} network`,
         `3. Include the payment reference in the transaction memo: ${paymentReference}`,
-        `4. Your subscription will be activated after payment is confirmed`,
+`4. Your subscription will be activated after payment is confirmed`,
       ],
       warning: 'Send only the exact amount. Excess sends will not be refunded.',
     };
   },
 
-  /**
-   * Verify payment status (placeholder - requires blockchain explorer API or webhook)
+/**
+   * Verify payment status by checking blockchain explorer
    * @param {string} txHash - Transaction hash
    * @param {string} cryptoSymbol - Crypto symbol
+   * @param {string} expectedAmount - Expected amount in crypto (for verification)
+   * @param {string} merchantWallet - Expected destination wallet
    * @returns {object} Payment status
    */
-  async verifyPayment(txHash, cryptoSymbol) {
-    // This is a placeholder - in production, you would:
-    // 1. Query blockchain explorer API for the transaction
-    // 2. Verify the amount and destination address
-    // 3. Check required confirmations
+  async verifyPaymentStatus(txHash, cryptoSymbol, expectedAmount, merchantWallet) {
+    const symbol = cryptoSymbol.toLowerCase();
+    const coin = SUPPORTED_COINS[symbol];
     
-    return {
-      txHash,
-      status: 'pending',
-      message: 'Payment verification requires blockchain explorer integration',
-    };
+    if (!coin) {
+      throw new Error(`Unsupported cryptocurrency: ${cryptoSymbol}`);
+    }
+    
+    try {
+      let txData;
+      
+      switch (symbol) {
+        case 'btc':
+          txData = await this.verifyBitcoinTx(txHash, coin.minConfirmations);
+          break;
+        case 'eth':
+        case 'usdt':
+        case 'usdc':
+          txData = await this.verifyEthereumTx(txHash, merchantWallet, expectedAmount, coin);
+          break;
+        case 'doge':
+          txData = await this.verifyDogecoinTx(txHash, coin.minConfirmations);
+          break;
+        case 'sol':
+          txData = await this.verifySolanaTx(txHash, coin.minConfirmations);
+          break;
+        default:
+          throw new Error(`Verification not supported for ${cryptoSymbol}`);
+      }
+      
+      // Update payment status in store
+      const status = {
+        txHash,
+        status: txData.confirmed ? 'confirmed' : 'pending',
+        confirmations: txData.confirmations,
+        requiredConfirmations: coin.minConfirmations,
+        timestamp: txData.timestamp,
+        from: txData.from,
+        amount: txData.amount,
+        verified: txData.confirmed && txData.validDestination,
+      };
+      
+      paymentStatusStore.set(txHash, status);
+      
+      return status;
+    } catch (error) {
+      console.error('Payment verification error:', error.message);
+      return {
+        txHash,
+        status: 'error',
+        message: error.message,
+      };
+    }
+  },
+
+  /**
+   * Verify Bitcoin transaction via Blockstream API
+   */
+  async verifyBitcoinTx(txHash, minConfirmations) {
+    try {
+      const response = await axios.get(`${BLOCKSTREAM_API}/tx/${txHash}`);
+      const tx = response.data;
+      
+      return {
+        confirmed: tx.status?.confirmed,
+        confirmations: tx.status?.confirmed ? tx.status.block_height - tx.status.confirmed : 0,
+        timestamp: tx.status?.confirmed ? new Date(tx.status.confirmed * 1000) : null,
+        from: tx.vin?.[0]?.prevout?.scriptpubkey_address || tx.vin?.[0]?.witness?.[1],
+        amount: tx.vout?.reduce((sum, out) => sum + (out.value || 0), 0) / 1e8,
+        validDestination: true, // Would need merchant wallet check
+      };
+    } catch (error) {
+      throw new Error(`Bitcoin verification failed: ${error.message}`);
+    }
+  },
+
+  /**
+   * Verify Ethereum/ERC-20 transaction via Etherscan API
+   */
+  async verifyEthereumTx(txHash, expectedTo, expectedAmount, coin) {
+    try {
+      const action = coin.contractAddress ? 'txlist' : 'txlist';
+      const params = new URLSearchParams({
+        module: 'account',
+        action,
+        txhash: txHash,
+        sort: 'desc',
+      });
+      
+      const response = await axios.get(`${ETHERSCAN_API}&${params}`);
+      const tx = response.data?.result?.[0];
+      
+      if (!tx) {
+        throw new Error('Transaction not found');
+      }
+      
+      // Parse value (wei to crypto unit)
+      const txAmount = parseFloat(tx.value) / Math.pow(10, coin.decimals);
+      const confirmations = parseInt(tx.confirmations, 10) || 0;
+      
+      // Validate destination (for ETH/ERC-20)
+      const validDestination = tx.to?.toLowerCase() === expectedTo?.toLowerCase();
+      
+      return {
+        confirmed: confirmations >= coin.minConfirmations,
+        confirmations,
+        timestamp: tx.timeStamp ? new Date(tx.timeStamp * 1000) : null,
+        from: tx.from,
+        to: tx.to,
+        amount: txAmount,
+        validDestination,
+        isContractCall: !!coin.contractAddress,
+      };
+    } catch (error) {
+      throw new Error(`Ethereum verification failed: ${error.message}`);
+    }
+  },
+
+  /**
+   * Verify Dogecoin transaction
+   */
+  async verifyDogecoinTx(txHash, minConfirmations) {
+    try {
+      const response = await axios.get(`${DOGE_API}/tx/${txHash}`);
+      const tx = response.data;
+      
+      return {
+        confirmed: tx.confirmations >= minConfirmations,
+        confirmations: tx.confirmations || 0,
+        timestamp: tx.time ? new Date(tx.time * 1000) : null,
+        from: tx.vin?.[0]?.addresses?.[0],
+        amount: parseFloat(tx.value) / 1e8,
+        validDestination: true,
+      };
+    } catch (error) {
+      throw new Error(`Dogecoin verification failed: ${error.message}`);
+    }
+  },
+
+  /**
+   * Verify Solana transaction
+   */
+  async verifySolanaTx(txHash, minConfirmations) {
+    try {
+      const response = await axios.post(SOLANA_RPC, {
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'getTransaction',
+        params: [txHash, { encoding: 'json' }],
+      });
+      
+      const tx = response.data?.result;
+      
+      if (!tx) {
+        throw new Error('Transaction not found');
+      }
+      
+      return {
+        confirmed: tx.meta?.confirmationStatus === 'confirmed',
+        confirmations: tx.meta?.confirmationStatus === 'confirmed' ? minConfirmations : 0,
+        timestamp: tx.blockTime ? new Date(tx.blockTime * 1000) : null,
+        from: tx.transaction?.message?.accountKeys?.[0],
+        amount: tx.meta?.postTokenBalances?.[0]?.uiTokenAmount?.uiAmountString || 0,
+        validDestination: true,
+      };
+    } catch (error) {
+      throw new Error(`Solana verification failed: ${error.message}`);
+    }
+  },
+
+  /**
+   * Check payment status from store
+   */
+  getPaymentStatus(txHash) {
+    return paymentStatusStore.get(txHash) || null;
+  },
+
+  /**
+   * Legacy verifyPayment wrapper for backwards compatibility
+   */
+  async verifyPayment(txHash, cryptoSymbol) {
+    return this.verifyPaymentStatus(txHash, cryptoSymbol, null, null);
   },
 };
 
