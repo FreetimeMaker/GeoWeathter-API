@@ -32,15 +32,38 @@ const WeatherHistoryController = {
     }
   },
 
-  async getHistory(req, res) {
+async getHistory(req, res) {
     try {
       const userId = req.user.userId;
-      const { startDate, endDate, location } = req.query;
+      let { startDate, endDate, location } = req.query;
 
+      // Get user's max history days based on subscription tier
+      const maxHistoryDays = await Subscription.getMaxHistoryDays(userId);
+
+      // If no dates provided, use default (last maxHistoryDays)
       if (!startDate || !endDate) {
-        return res.status(400).json({ 
-          message: 'Start and end date required' 
-        });
+        const now = new Date();
+        const start = new Date();
+        start.setDate(start.getDate() - maxHistoryDays);
+        startDate = start.toISOString();
+        endDate = now.toISOString();
+      } else {
+        // Validate date range doesn't exceed user's plan limit
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        const dayDiff = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+
+        if (dayDiff > maxHistoryDays) {
+          return res.status(403).json({ 
+            message: `Your plan allows maximum ${maxHistoryDays} days of history access`,
+            maxHistoryDays,
+            requestedDays: dayDiff,
+            upgradeRequired: true,
+            upgrades: Subscription.getAvailableUpgrades(
+              (await Subscription.getSubscription(userId))?.tier || 'free'
+            )
+          });
+        }
       }
 
       let records = await WeatherHistory.findByUserIdAndDateRange(

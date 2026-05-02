@@ -12,14 +12,14 @@ const Subscription = {
     ONE_TIME: 'one_time',
   },
 
-  // One-time lifetime pricing (NO monthly/yearly)
+// One-time lifetime pricing (NO monthly/yearly)
   PRICING: {
     freemium: {
       one_time: 5.00, // One-time lifetime price for freemium tier
     },
   },
 
-  // Define valid upgrade paths: from -> [allowed upgrades to]
+// Define valid upgrade paths: from -> [allowed upgrades to]
   UPGRADE_PATHS: {
     free: ['freemium'],
     freemium: [], // Cannot upgrade from freemium (top tier)
@@ -34,7 +34,7 @@ const Subscription = {
       mapLayers: false,
       dataExport: true,
     },
-    freemium: {
+freemium: {
       maxFavorites: 8,
       maxHistoryDays: 5,
       dataSourcesCount: 2,
@@ -229,6 +229,22 @@ async checkFeatureAccess(userId, feature) {
   },
 
 /**
+   * Get the maximum number of history days allowed for a user
+   * @param {string} userId - User ID
+   * @returns {number} Maximum history days allowed
+   */
+  async getMaxHistoryDays(userId) {
+    const subscription = await this.getSubscription(userId);
+    const tier = subscription?.tier || this.TIERS.FREE;
+
+    if (!this.FEATURES[tier]) {
+      return this.FEATURES.free.maxHistoryDays;
+    }
+
+    return this.FEATURES[tier].maxHistoryDays;
+  },
+
+  /**
    * Get upgrade pricing including credit calculation (ONE-TIME only)
    * @param {string} userId - User ID
    * @param {string} targetTier - Target tier to upgrade to
