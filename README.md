@@ -27,16 +27,16 @@ Eine produktionsreife Cloud-basierte REST API für eine Wetter-Anwendung mit **F
 
 ### 3. 💰 **Freemium-Open-SaaS-Modell**
 
-| Feature | Free | Freemium | Enterprise |
-|---------|:----:|:-------:|:----------:|
-| Favoriten | 5 | 50 | ∞ |
-| History-Tage | 30 | 365 | 1825 |
-| Datenquellen | 1 | 3 | 10 |
-| Push-Benachrichtigungen | ❌ | ✅ | ✅ |
-| Karten-Layer (Radar, Satellit) | ❌ | ✅ | ✅ |
-| Daten-Export | ❌ | ✅ | ✅ |
-| API Rate Limits | 100 req/hr | 10k req/hr | Unlimited |
-| Support | Community | Email | Priority |
+| Feature | Free | Freemium |
+|---------|:----:|:-------:|
+| Favoriten | 5 | 50 | 
+| History-Tage | 30 | 365 |
+| Datenquellen | 1 | 3 | 
+| Push-Benachrichtigungen | ❌ | ✅ | 
+| Karten-Layer (Radar, Satellit) | ❌ | ✅ | 
+| Daten-Export | ❌ | ✅ | 
+| API Rate Limits | 100 req/hr | 10k req/hr | 
+| Support | Community | Community | 
 
 ### 4. 🎯 **Freemium-Features**
 - ✅ Multi-Source Wetterdaten (OpenWeather, WeatherAPI)

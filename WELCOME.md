@@ -20,7 +20,6 @@ Eine **vollständig funktionsfähige REST API** für eine Wetter-App mit allen a
 3. **💰 Freemium-Open-SaaS**
    - **Kostenlos**: 5 Favoriten, 30 Tage History, 1 Datenquelle
    - **Freemium**: 50 Favoriten, 365 Tage History, 3 Datenquellen, Push-Benachrichtigungen, Karten-Layer
-   - **Enterprise**: Unlimited mit allen Features
 
 4. **🎯 Freemium-Features**
    - Mehrere Datenquellen (OpenWeather, WeatherAPI)
