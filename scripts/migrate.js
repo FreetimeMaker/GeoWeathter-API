@@ -8,7 +8,7 @@ const migrations = [
       id UUID PRIMARY KEY,
       username VARCHAR(255) UNIQUE,
       email VARCHAR(255) UNIQUE,
-      github_oid VARCHAR(255) UNIQUE,
+      github_id VARCHAR(255) UNIQUE,
       password VARCHAR(255),
       name VARCHAR(255),
       subscription_tier VARCHAR(50) DEFAULT 'free',

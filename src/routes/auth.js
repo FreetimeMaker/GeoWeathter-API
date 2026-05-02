@@ -1,29 +1,27 @@
 const express = require('express');
 const AuthController = require('../controllers/AuthController');
+const passport = require('passport');
 
 const router = express.Router();
 
+// GitHub OAuth - Start authentication
 /**
- * @route   POST /api/auth/register
- * @desc    Register a new user
- * @body    { username, password, name }
+ * @route   GET /api/auth/github
+ * @desc    Login with GitHub (redirects to GitHub)
+ * @returns { redirect to GitHub }
+ */
+router.get('/github', passport.authenticate('github', { scope: ['user:email'] }));
+
+// GitHub OAuth - Callback
+/**
+ * @route   GET /api/auth/github/callback
+ * @desc    GitHub OAuth callback
  * @returns { user, token, refreshToken }
  */
-router.post('/register', AuthController.register);
-
-/**
- * @route   POST /api/auth/login
- * @desc    Log in user
- * @body    { username, password }
- * @returns { user, token, refreshToken }
- */
-router.post('/login', AuthController.login);
-
-/**
- * @route   POST /api/auth/logout
- * @desc    Log out user
- * @returns { message }
- */
-router.post('/logout', AuthController.logout);
+router.get(
+  '/github/callback',
+  passport.authenticate('github', { failureRedirect: '/' }),
+  AuthController.githubCallback
+);
 
 module.exports = router;

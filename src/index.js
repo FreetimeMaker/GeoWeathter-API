@@ -102,8 +102,8 @@ app.use(errorHandler);
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-  console. log('GeoWeather API running on port ' + PORT);
-  console. log('Environment: ' + (process.env.NODE_ENV || 'development'));
+  console.log('GeoWeather API running on port ' + PORT);
+  console.log('Environment: ' + (process.env.NODE_ENV || 'development'));
 });
 
-module. exports = app;
+module.exports = app;
