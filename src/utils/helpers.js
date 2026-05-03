@@ -53,5 +53,5 @@ module.exports = {
   paginate,
   formatResponse,
   calculateDistance,
-  getNearbyLocations,
+  getNearbyOrte,
 };

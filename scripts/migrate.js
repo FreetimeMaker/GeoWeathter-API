@@ -1,5 +1,10 @@
 require('dotenv').config();
-const pool = require('../src/config/database');
+const { Pool } = require('pg');
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL || process.env.POSTGRES_Url,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+});
 
 const migrations = [
   // Users table
@@ -88,11 +93,12 @@ async function runMigrations() {
     console.log('Starte Datenbankmigrationen...');
 
     for (const migration of migrations) {
-      await pool.query(migration);
+      await pool.query(migration.trim());
       console.log('✓ Migration ausgeführt');
     }
 
     console.log('✓ Alle Migrationen erfolgreich abgeschlossen');
+    await pool.end();
     process.exit(0);
   } catch (error) {
     console.error('✗ Migrationsfehler:', error);
