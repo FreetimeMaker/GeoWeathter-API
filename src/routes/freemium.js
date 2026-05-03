@@ -125,7 +125,8 @@ router.post('/weather-alert', async (req, res) => {
       latitude,
       longitude,
       alertType,
-      message
+      message,
+      req.body.platform || 'unknown'
     );
 
     res.status(201).json({

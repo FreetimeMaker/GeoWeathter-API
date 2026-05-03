@@ -2,7 +2,7 @@ require('dotenv').config();
 const pool = require('../src/config/database');
 
 const migrations = [
-// Users table
+  // Users table
   `
     CREATE TABLE IF NOT EXISTS users (
       id UUID PRIMARY KEY,
@@ -17,11 +17,11 @@ const migrations = [
     )
   `,
 
-  // Favorites table
+  // Orte table
   `
-    CREATE TABLE IF NOT EXISTS favorites (
+    CREATE TABLE IF NOT EXISTS orte (
       id UUID PRIMARY KEY,
-      user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      user_id UUID REFERENCES users(id) ON DELETE SET NULL,
       name VARCHAR(255) NOT NULL,
       latitude DECIMAL(10, 8) NOT NULL,
       longitude DECIMAL(11, 8) NOT NULL,
@@ -76,7 +76,7 @@ const migrations = [
   `,
 
   // Indexes
-  `CREATE INDEX IF NOT EXISTS idx_favorites_user_id ON favorites(user_id)`,
+  `CREATE INDEX IF NOT EXISTS idx_orte_user_id ON orte(user_id)`,
   `CREATE INDEX IF NOT EXISTS idx_weather_history_user_id ON weather_history(user_id)`,
   `CREATE INDEX IF NOT EXISTS idx_weather_history_recorded_at ON weather_history(recorded_at)`,
   `CREATE INDEX IF NOT EXISTS idx_subscriptions_user_id ON subscriptions(user_id)`,
@@ -101,3 +101,4 @@ async function runMigrations() {
 }
 
 runMigrations();
+

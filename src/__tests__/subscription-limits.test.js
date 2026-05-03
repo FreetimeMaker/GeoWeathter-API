@@ -14,9 +14,9 @@ describe('FEATURES', () => {
       expect(Subscription.FEATURES.freemium.maxHistoryDays).toBe(5);
     });
 
-    it('should have different favorites limits', () => {
-      expect(Subscription.FEATURES.free.maxFavorites).toBe(5);
-      expect(Subscription.FEATURES.freemium.maxFavorites).toBe(8);
+    it('should have different orte limits', () => {
+      expect(Subscription.FEATURES.free.maxOrte).toBe(4);
+      expect(Subscription.FEATURES.freemium.maxOrte).toBe(8);
     });
   });
 

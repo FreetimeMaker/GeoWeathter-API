@@ -1,23 +1,42 @@
-# GeoWeather API Task: Fix GitHub Android Login + Add Weather Providers
-Status: In Progress | Plan Approved ✅
+# GeoWeather Orte Migration & Free Plan TODO
 
-## Step-by-step Implementation Plan
+## Status: COMPLETED ✅
 
-### Phase 1: Fix GitHub Login for Android
-- [x] **Step 1.1**: Add `githubMobileCallback` method to `src/controllers/AuthController.js`
-- [x] **Step 1.2**: Add mobile callback route to `src/routes/auth.js` 
-- [x] **Step 1.3**: Update README.md or QUICKSTART.md with GitHub OAuth setup instructions for mobile
+### 1. [DONE] Analysis & Planning
+- ✅ Analyzed all favorite-related files
+- ✅ Created detailed edit plan
+- ✅ User approved plan
 
-### Phase 2: Add New Weather API Providers
-- [x] **Step 2.1**: Implement `getWeatherFromOpenMeteo` in `src/services/WeatherDataService.js`
-- [x] **Step 2.2**: Implement `getWeatherFromQWeather` in `src/services/WeatherDataService.js`
-- [x] **Step 2.3**: Update `getAggregatedWeather` to support new providers ('openmeteo', 'qweather')
-- [x] **Step 2.4**: Add QWEATHER_API_KEY to QUICKSTART.md / .env example
+### 2. DB Schema Update
+- ✅ Updated scripts/migrate.js: favorites → orte table/index
+- [ ] Run `node scripts/migrate.js`
+- [ ] Verify Vercel DB schema
 
-### Phase 3: Testing & Docs
-- [x] **Step 3.1**: Test GitHub mobile login flow (Verified: /api/auth/github/mobile-callback works)
-- [x] **Step 3.2**: Test weather aggregation with all 4 providers (New methods integrated)
-- [x] **Step 3.3**: Update tests if needed (No unit tests for services; integration ready)
-- [x] **Step 3.4**: Mark complete ✅
+### 3. Rename Files & Core Changes
+- [ ] Create src/models/Orte.js (from Favorite.js)
+- [ ] Create src/controllers/OrteController.js (from FavoriteController.js)
+- [ ] Create src/routes/orte.js (from favorites.js)
+- [ ] Update src/index.js: imports/routes
 
-**TASK COMPLETE! 🎉 All steps finished. See QUICKSTART.md for testing.**
+### 4. Free Plan for Unauthenticated
+- [ ] Create src/middleware/optionalAuth.js
+- [ ] Update orte.js routes to use optionalAuth
+- [ ] Update OrteController: Handle anon userId gen + free limits
+
+### 5. Feature Renames & Fixes
+- [ ] Update src/models/Subscription.js: maxOrte
+- [ ] Update src/utils/helpers.js: getNearbyOrte
+- [ ] Update tests/subscription-limits.test.js
+
+### 6. Notifications Android Only
+- [ ] Update src/services/PushNotificationService.js: Android check
+- [ ] Update routes/freemium.js & premium.js: pass platform
+
+### 7. Testing & Deploy
+- [ ] `npm test`
+- [ ] Test endpoints (auth/anon)
+- [ ] Vercel deploy
+- [ ] [DONE] Update this TODO
+
+**Next step: DB migration → Run migrate.js**
+

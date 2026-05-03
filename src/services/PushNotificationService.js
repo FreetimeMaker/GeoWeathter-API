@@ -47,15 +47,21 @@ const notificationId = generateUUID();
     return titles[alertType] || 'Wetter-Warnung';
   },
 
-  async deliverPushNotification(userId, notification) {
-    // Integration mit Firebase Cloud Messaging
-    // oder anderen Push-Notification-Services
+  async deliverPushNotification(userId, notification, platform) {
+    // Nur Android notifications
+    if (platform !== 'android') {
+      console.log(`Push notification skipped: Android components only. Platform: ${platform}`);
+      return;
+    }
+
+    // Integration mit Firebase Cloud Messaging (Android FCM)
     if (process.env.PUSH_NOTIFICATION_SERVICE === 'firebase') {
-      // TODO: Firebase Admin SDK Integration
+      // TODO: Firebase Admin SDK Integration for Android
       // admin.messaging().send({
       //   notification: { title: notification.title, body: notification.message },
-      //   topic: `user_${userId}`
+      //   topic: `user_${userId}_android`
       // });
+      console.log(`Android push delivered to user ${userId}: ${notification.title}`);
     }
   },
 
