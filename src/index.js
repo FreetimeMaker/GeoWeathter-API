@@ -104,9 +104,18 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log('GeoWeather API running on port ' + PORT);
-  console.log('Environment: ' + (process.env.NODE_ENV || 'development'));
+  console.log('Environment: ' + (process.env.NODE_ENV || 'production'));
+  
+  // Startup health check
+  try {
+    const dbStatus = await database.healthCheck();
+    const statusText = dbStatus === null ? 'not_configured' : (dbStatus ? '✅ connected' : '❌ disconnected');
+    console.log('Database:', statusText);
+  } catch (error) {
+    console.error('Startup DB check failed:', error.message);
+  }
 });
 
 module.exports = app;

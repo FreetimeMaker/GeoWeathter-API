@@ -1,14 +1,22 @@
-# GeoWeather API - Supabase Database Setup (Approved Plan)
+# GeoWeather API Login Fix - TODO
 
-## Current Progress
-- [x] Analyzed models and requirements
-- [x] Step 1: supabase init & config created
-- [x] Step 2: Linked project vzuzorzvuuinpdrntnnm (GeoWeatherDataBase)
-- [x] Step 3: Created 6 migrations (users, locations, favorites, subscriptions, weather_history, push_notifications)
-- [ ] Step 4: npx supabase db push
-- [ ] Step 5: Test DB + models
-- [ ] Step 6: Update scripts/migrate.js
-- [ ] Complete
+## Status: In Progress
 
-**Next:** Run `npx supabase db push` to apply schema to remote DB.
-
+### 1. ✅ Fix passport.js DB mismatch (Supabase instead of pg pool)
+   - Replace pool.query with supabase.from('users')
+   - Fix serializeUser/deserializeUser
+   - Dynamic callbackURL
+   
+### 2. ✅ Add username/password routes to auth.js
+   - POST /api/auth/login
+   - POST /api/auth/register
+   
+### 3. ✅ Improve errorHandler logging
+   
+### 4. ✅ Add startup health check log in index.js
+   
+### 5. ✅ Test locally (server running, no crashes)
+   
+### 6. [ ] Deploy to Vercel
+   
+### 7. [ ] Verify /api/auth/github works

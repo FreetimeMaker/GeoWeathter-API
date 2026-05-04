@@ -4,6 +4,19 @@ const passport = require('passport');
 
 const router = express.Router();
 
+// Username/Password Auth
+/**
+ * @route   POST /api/auth/register
+ * @desc    Register new user
+ */
+router.post('/register', AuthController.register);
+
+/**
+ * @route   POST /api/auth/login
+ * @desc    Login user (username/password)
+ */
+router.post('/login', AuthController.login);
+
 // GitHub OAuth - Start authentication
 /**
  * @route   GET /api/auth/github
