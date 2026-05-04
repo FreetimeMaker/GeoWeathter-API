@@ -35,6 +35,7 @@ if (process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET) {
         clientID: process.env.GITHUB_CLIENT_ID,
         clientSecret: process.env.GITHUB_CLIENT_SECRET,
         callbackURL: "https://geo-weather-api.vercel.app/api/auth/github/callback",
+        redirect_uri: "https://geo-weather-api.vercel.app/api/auth/github/callback",
         scope: ['user:email'],
       },
       async (accessToken, refreshToken, profile, done) => {
