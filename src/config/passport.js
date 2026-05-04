@@ -1,3 +1,5 @@
+console.log(">>> USING PASSPORT FILE:", __filename);
+
 const passport = require('passport');
 const GitHubStrategy = require('passport-github2').Strategy;
 const { createClient } = require('@supabase/supabase-js');
