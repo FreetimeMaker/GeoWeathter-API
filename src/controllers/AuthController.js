@@ -8,13 +8,13 @@ const AuthController = {
   // ---------------------------------------------------------
   // GitHub OAuth – Start
   // ---------------------------------------------------------
-  githubAuth: passport.authenticate('github', { scope: ['user:email'] }),
+  githubAuth: passport.authenticate('github', { scope: ['user:email'], session: false }),
 
   // ---------------------------------------------------------
   // GitHub OAuth – Callback + Redirect in die App
   // ---------------------------------------------------------
   githubCallback: [
-    passport.authenticate('github', { failureRedirect: '/login' }),
+    passport.authenticate('github', { failureRedirect: '/login', session: false }),
 
     async (req, res) => {
       try {
