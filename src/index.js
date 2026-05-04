@@ -26,17 +26,9 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Session middleware for Passport OAuth
-app.use(session({
-  secret: process.env.SESSION_SECRET || 'dev-secret-change-in-production',
-  resave: false,
-  saveUninitialized: false,
-  cookie: { secure: process.env.NODE_ENV === 'production' },
-}));
 
 // Initialize Passport
 app.use(passport.initialize());
-app.use(passport.session());
 
 // Health Check
 app.get('/api/health', async (req, res) => {

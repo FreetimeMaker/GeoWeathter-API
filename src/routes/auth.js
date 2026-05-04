@@ -23,19 +23,18 @@ router.post('/login', AuthController.login);
  * @desc    Login with GitHub (redirects to GitHub)
  * @returns { redirect to GitHub }
  */
-router.get('/github', passport.authenticate('github', { scope: ['user:email'] }));
 
-// GitHub OAuth - Callback
-/**
- * @route   GET /api/auth/github/callback
- * @desc    GitHub OAuth callback
- * @returns { user, token, refreshToken }
- */
+router.get(
+  '/github',
+  passport.authenticate('github', { scope: ['user:email'], session: false })
+);
+
 router.get(
   '/github/callback',
-  passport.authenticate('github', { failureRedirect: '/' }),
+  passport.authenticate('github', { failureRedirect: '/', session: false }),
   AuthController.githubCallback
 );
+
 
 // GitHub OAuth - Mobile Callback (JSON for Android/iOS)
 /**
