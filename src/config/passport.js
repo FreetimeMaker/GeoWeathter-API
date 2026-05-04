@@ -5,8 +5,6 @@ const User = require('../models/User');
 const { generateUUID } = require('../utils/helpers');
 const crypto = require('crypto');
 
-app.use(passport.initialize());
-
 passport.serializeUser((user, done) => {
   done(null, user.id);
 });

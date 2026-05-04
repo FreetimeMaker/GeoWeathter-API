@@ -8,29 +8,23 @@ const AuthController = {
   // ---------------------------------------------------------
   // GitHub OAuth – Start
   // ---------------------------------------------------------
-  githubAuth(req, res, next) {
-    passport.authenticate('github', { scope: ['user:email'] })(req, res, next);
-  },
+  githubAuth: passport.authenticate('github', { scope: ['user:email'] }),
 
   // ---------------------------------------------------------
   // GitHub OAuth – Callback + Redirect in die App
   // ---------------------------------------------------------
-  githubCallback(req, res, next) {
-    passport.authenticate('github', { failureRedirect: '/login' })(req, res, async (err) => {
-      if (err) {
-        return res.status(500).json({ message: 'GitHub authentication failed' });
-      }
+  githubCallback: [
+    passport.authenticate('github', { failureRedirect: '/login' }),
 
+    async (req, res) => {
       try {
         const user = req.user;
 
         const token = generateToken(user.id, user.username);
         const refreshToken = generateRefreshToken(user.id);
 
-        // Avatar aus DB (kommt aus Passport Strategy)
         const avatar = encodeURIComponent(user.avatar_url || "");
 
-        // Redirect in die App
         return res.redirect(
           `geoweather://auth/callback?token=${token}&avatar=${avatar}`
         );
@@ -38,39 +32,44 @@ const AuthController = {
       } catch (error) {
         return res.status(500).json({ message: error.message });
       }
-    })(req, res, next);
-  },
+    }
+  ],
 
   // ---------------------------------------------------------
   // GitHub OAuth – Mobile Callback (JSON response for Android/iOS)
   // ---------------------------------------------------------
-  githubMobileCallback(req, res) {
-    try {
-      const user = req.user;
+  githubMobileCallback: [
+    passport.authenticate('github', { failureRedirect: '/login' }),
 
-      const token = generateToken(user.id, user.username);
-      const refreshToken = generateRefreshToken(user.id);
+    async (req, res) => {
+      try {
+        const user = req.user;
 
-      return res.status(200).json({
-        success: true,
-        message: 'GitHub authentication successful',
-        user: {
-          id: user.id,
-          username: user.username,
-          name: user.name || user.username,
-          avatar_url: user.avatar_url || null,
-          subscription_tier: user.subscription_tier || 'freemium',
-        },
-        token,
-        refreshToken,
-      });
-    } catch (error) {
-      return res.status(500).json({ 
-        success: false, 
-        message: error.message 
-      });
+        const token = generateToken(user.id, user.username);
+        const refreshToken = generateRefreshToken(user.id);
+
+        return res.status(200).json({
+          success: true,
+          message: 'GitHub authentication successful',
+          user: {
+            id: user.id,
+            username: user.username,
+            name: user.name || user.username,
+            avatar_url: user.avatar_url || null,
+            subscription_tier: user.subscription_tier || 'freemium',
+          },
+          token,
+          refreshToken,
+        });
+
+      } catch (error) {
+        return res.status(500).json({
+          success: false,
+          message: error.message
+        });
+      }
     }
-  },
+  ],
 
   // ---------------------------------------------------------
   // Registrierung (Username + Passwort)
@@ -104,6 +103,7 @@ const AuthController = {
         token,
         refreshToken,
       });
+
     } catch (error) {
       return res.status(500).json({ message: error.message });
     }
@@ -144,6 +144,7 @@ const AuthController = {
         token,
         refreshToken,
       });
+
     } catch (error) {
       return res.status(500).json({ message: error.message });
     }
