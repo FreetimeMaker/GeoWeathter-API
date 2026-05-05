@@ -1,13 +1,16 @@
-console.log(">>> USING PASSPORT FILE:", __filename);
+let OAuthApp;
 
-const { OAuthApp } = require("@octokit/oauth-app");
+(async () => {
+  const module = await import("@octokit/oauth-app");
+  OAuthApp = module.OAuthApp;
+})();
 
-const app = new OAuthApp({
-  clientId: process.env.GITHUB_CLIENT_ID,
-  clientSecret: process.env.GITHUB_CLIENT_SECRET
-});
+const githubLogin = async (req, res) => {
+  const app = new OAuthApp({
+    clientId: process.env.GITHUB_CLIENT_ID,
+    clientSecret: process.env.GITHUB_CLIENT_SECRET
+  });
 
-module.exports.githubLogin = async (req, res) => {
   const url = app.getAuthorizationUrl({
     scopes: ["user:email"]
   });
@@ -15,14 +18,15 @@ module.exports.githubLogin = async (req, res) => {
   res.redirect(url);
 };
 
-module.exports.githubCallback = async (req, res) => {
+const githubCallback = async (req, res) => {
   try {
+    const app = new OAuthApp({
+      clientId: process.env.GITHUB_CLIENT_ID,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET
+    });
+
     const { code } = req.query;
-
     const token = await app.createToken({ code });
-
-    // token.authentication.token = access_token
-    // token.authentication.scopes = scopes
 
     res.redirect(
       `geoweather://auth/callback?token=${token.authentication.token}`
@@ -33,7 +37,4 @@ module.exports.githubCallback = async (req, res) => {
   }
 };
 
-console.log("GITHUB_CLIENT_ID:", process.env.GITHUB_CLIENT_ID);
-console.log("GITHUB_CLIENT_SECRET:", process.env.GITHUB_CLIENT_SECRET ? "LOADED" : "MISSING");
-
-module.exports = passport;
+module.exports = { githubLogin, githubCallback };
