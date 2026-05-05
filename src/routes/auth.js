@@ -1,51 +1,18 @@
 const express = require('express');
 const AuthController = require('../controllers/AuthController');
-const passport = require('passport');
+const { githubLogin, githubCallback } = require("../config/passport");
 
 const router = express.Router();
 
 // Username/Password Auth
-/**
- * @route   POST /api/auth/register
- * @desc    Register new user
- */
 router.post('/register', AuthController.register);
-
-/**
- * @route   POST /api/auth/login
- * @desc    Login user (username/password)
- */
 router.post('/login', AuthController.login);
 
-// GitHub OAuth - Start authentication
-/**
- * @route   GET /api/auth/github
- * @desc    Login with GitHub (redirects to GitHub)
- * @returns { redirect to GitHub }
- */
+// GitHub OAuth
+router.get("/github", githubLogin);
+router.get("/github/callback", githubCallback);
 
-router.get(
-  '/github',
-  passport.authenticate('github', { scope: ['user:email'], session: false })
-);
-
-router.get(
-  '/github/callback',
-  passport.authenticate('github', { failureRedirect: '/', session: false }),
-  AuthController.githubCallback
-);
-
-
-// GitHub OAuth - Mobile Callback (JSON for Android/iOS)
-/**
- * @route   GET /api/auth/github/mobile-callback
- * @desc    GitHub OAuth mobile callback (JSON response)
- * @returns { success, user, token, refreshToken }
- */
-router.get(
-  '/github/mobile-callback',
-  passport.authenticate('github', { session: false }),
-  AuthController.githubMobileCallback
-);
+// Mobile GitHub OAuth (JSON)
+router.get("/github/mobile-callback", githubCallback);
 
 module.exports = router;
