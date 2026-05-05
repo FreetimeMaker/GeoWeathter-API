@@ -1,75 +1,132 @@
-const passport = require('passport');
 const User = require('../models/User');
 const pool = require('../config/database');
 const { generateToken, generateRefreshToken } = require('../config/auth');
+
+// Dynamic import for Octokit OAuth (ESM inside CommonJS)
+let OAuthApp;
+(async () => {
+  const module = await import("@octokit/oauth-app");
+  OAuthApp = module.OAuthApp;
+})();
 
 const AuthController = {
 
   // ---------------------------------------------------------
   // GitHub OAuth – Start
   // ---------------------------------------------------------
-  githubAuth: passport.authenticate('github', { scope: ['user:email'], session: false }),
+  async githubAuth(req, res) {
+    const app = new OAuthApp({
+      clientId: process.env.GITHUB_CLIENT_ID,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET
+    });
+
+    const url = app.getAuthorizationUrl({
+      scopes: ["user:email"]
+    });
+
+    res.redirect(url);
+  },
 
   // ---------------------------------------------------------
-  // GitHub OAuth – Callback + Redirect in die App
+  // GitHub OAuth – Callback (Deep Link Redirect)
   // ---------------------------------------------------------
-  githubCallback: [
-    passport.authenticate('github', { failureRedirect: '/login', session: false }),
+  async githubCallback(req, res) {
+    try {
+      const { code } = req.query;
 
-    async (req, res) => {
-      try {
-        const user = req.user;
+      const app = new OAuthApp({
+        clientId: process.env.GITHUB_CLIENT_ID,
+        clientSecret: process.env.GITHUB_CLIENT_SECRET
+      });
 
-        const token = generateToken(user.id, user.username);
-        const refreshToken = generateRefreshToken(user.id);
+      const tokenData = await app.createToken({ code });
+      const accessToken = tokenData.authentication.token;
 
-        const avatar = encodeURIComponent(user.avatar_url || "");
+      // Fetch GitHub user
+      const userResponse = await fetch("https://api.github.com/user", {
+        headers: { Authorization: `Bearer ${accessToken}` }
+      });
 
-        return res.redirect(
-          `geoweather://auth/callback?token=${token}&avatar=${avatar}`
+      const ghUser = await userResponse.json();
+
+      // Check if user exists
+      let user = await User.findByUsername(ghUser.login);
+
+      if (!user) {
+        user = await User.createOAuthUser(
+          ghUser.login,
+          ghUser.name || ghUser.login,
+          ghUser.avatar_url
         );
-
-      } catch (error) {
-        return res.status(500).json({ message: error.message });
       }
+
+      const token = generateToken(user.id, user.username);
+      const refreshToken = generateRefreshToken(user.id);
+
+      const avatar = encodeURIComponent(user.avatar_url || "");
+
+      return res.redirect(
+        `geoweather://auth/callback?token=${token}&avatar=${avatar}`
+      );
+
+    } catch (error) {
+      console.error("GitHub OAuth error:", error);
+      return res.status(500).json({ message: "OAuth failed", error: error.message });
     }
-  ],
+  },
 
   // ---------------------------------------------------------
-  // GitHub OAuth – Mobile Callback (JSON response for Android/iOS)
+  // GitHub OAuth – Mobile JSON Callback
   // ---------------------------------------------------------
-  githubMobileCallback: [
-    passport.authenticate('github', { failureRedirect: '/login' }),
+  async githubMobileCallback(req, res) {
+    try {
+      const { code } = req.query;
 
-    async (req, res) => {
-      try {
-        const user = req.user;
+      const app = new OAuthApp({
+        clientId: process.env.GITHUB_CLIENT_ID,
+        clientSecret: process.env.GITHUB_CLIENT_SECRET
+      });
 
-        const token = generateToken(user.id, user.username);
-        const refreshToken = generateRefreshToken(user.id);
+      const tokenData = await app.createToken({ code });
+      const accessToken = tokenData.authentication.token;
 
-        return res.status(200).json({
-          success: true,
-          message: 'GitHub authentication successful',
-          user: {
-            id: user.id,
-            username: user.username,
-            name: user.name || user.username,
-            avatar_url: user.avatar_url || null,
-            subscription_tier: user.subscription_tier || 'freemium',
-          },
-          token,
-          refreshToken,
-        });
+      const userResponse = await fetch("https://api.github.com/user", {
+        headers: { Authorization: `Bearer ${accessToken}` }
+      });
 
-      } catch (error) {
-        return res.status(500).json({
-          success: false,
-          message: error.message
-        });
+      const ghUser = await userResponse.json();
+
+      let user = await User.findByUsername(ghUser.login);
+
+      if (!user) {
+        user = await User.createOAuthUser(
+          ghUser.login,
+          ghUser.name || ghUser.login,
+          ghUser.avatar_url
+        );
       }
+
+      const token = generateToken(user.id, user.username);
+      const refreshToken = generateRefreshToken(user.id);
+
+      return res.status(200).json({
+        success: true,
+        message: "GitHub authentication successful",
+        user: {
+          id: user.id,
+          username: user.username,
+          name: user.name,
+          avatar_url: user.avatar_url,
+          subscription_tier: user.subscription_tier
+        },
+        token,
+        refreshToken
+      });
+
+    } catch (error) {
+      return res.status(500).json({ success: false, message: error.message });
     }
-  ],
+  },
 
   // ---------------------------------------------------------
   // Registrierung (Username + Passwort)
@@ -154,12 +211,7 @@ const AuthController = {
   // Logout
   // ---------------------------------------------------------
   async logout(req, res) {
-    req.logout((err) => {
-      if (err) {
-        return res.status(500).json({ message: 'Logout failed' });
-      }
-      return res.status(200).json({ message: 'Successfully logged out' });
-    });
+    return res.status(200).json({ message: 'Successfully logged out' });
   },
 };
 
