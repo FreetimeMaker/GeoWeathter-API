@@ -1,23 +1,18 @@
-// src/config/github.js
+const { createOAuthAppAuth } = require("@octokit/auth-oauth-app");
+const { request } = require("@octokit/request");
 
-let OAuthApp;
-
-(async () => {
-  const module = await import("@octokit/oauth-app");
-  OAuthApp = module.OAuthApp;
-})();
-
-function createApp() {
-  return new OAuthApp({
+function getApp() {
+  return createOAuthAppAuth({
     clientId: process.env.GITHUB_CLIENT_ID,
     clientSecret: process.env.GITHUB_CLIENT_SECRET
   });
 }
 
 async function githubLogin(req, res) {
-  const app = createApp();
+  const auth = getApp();
 
-  const { url } = app.getWebFlowAuthorizationUrl({
+  const { url } = await auth({
+    type: "oauth-app",
     scopes: ["user:email"]
   });
 
@@ -26,11 +21,16 @@ async function githubLogin(req, res) {
 
 async function githubCallback(req, res) {
   try {
-    const app = createApp();
     const { code } = req.query;
 
-    const tokenData = await app.createToken({ code });
-    const accessToken = tokenData.authentication.token;
+    const auth = getApp();
+
+    const tokenData = await auth({
+      type: "token",
+      code
+    });
+
+    const accessToken = tokenData.token;
 
     res.redirect(`geoweather://auth/callback?token=${accessToken}`);
   } catch (err) {
