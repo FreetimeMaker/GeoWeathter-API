@@ -44,14 +44,9 @@ router.get('/health', async (req, res) => {
 router.get('/', (req, res) => {
     res.json({
         message: 'Welcome to the GeoWeather API v1!',
-        version: '1.1.0',
+        version: '1.2.0',
         endpoints: {
             health: '/api/v1/health',
-            auth: '/api/v1/auth',
-            modrinth: '/api/v1/auth/modrinth',
-            github: '/api/v1/auth/github',
-            locations: '/api/v1/locations',
-            weatherHistory: '/api/v1/weather-history',
             subscriptions: '/api/v1/subscriptions',
             'subscriptions/pricing': '/api/v1/subscriptions/pricing',
             'subscriptions/buy': '/api/v1/subscriptions/buy',
